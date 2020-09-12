@@ -25,7 +25,7 @@ export const GroupsListItem = ({ groups }) => {
 								<td className="text-nowrap">{el.character_code}</td>
 								<td>{el.name}</td>
 								<td>{el.description}</td>
-								<td className="td-actions text-nowrap">
+								<td className="td-actions">
 									<Link to={`/group/${el._id}`} className="td-actions__link">
 										<i className="la la-edit edit"></i>
 									</Link>
