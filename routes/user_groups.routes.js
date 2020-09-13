@@ -12,13 +12,13 @@ router.get('/', auth, async (req, res) => {
 	}
 });
 
-/* router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
 	try {
 		const userGroups = await User_Groups.findById(req.params.id);
 		res.json(userGroups);
 	} catch (e) {
 		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
 	}
-}); */
+});
 
 module.exports = router;
