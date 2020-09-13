@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { useHttp } from '../../hooks/http.hook';
 
 import { Nav } from 'react-bootstrap';
 import { ReactComponent as IconUsers } from '../../img/users.svg';
@@ -11,10 +12,31 @@ import { ReactComponent as LogOut } from '../../img/logout.svg';
 export const Sidebar = (props) => {
 	const history = useHistory();
 	const auth = useContext(AuthContext);
+	const [userGroups, setUserGroups] = useState();
+	const { loading, request } = useHttp();
 
-	let dropdownToggler = (event) => {
+	const dropdownToggler = (event) => {
 		event.target.closest('.sb-dropdown').classList.toggle('open');
 	};
+
+	const getUserGroups = useCallback(async () => {
+		try {
+			const data = await request(
+				`/api/user_groups/${auth.userId}`,
+				'GET',
+				null,
+				{
+					Authorization: `Bearer ${auth.token}`,
+				},
+			);
+
+			setUserGroups(data);
+		} catch (e) {}
+	}, [auth.token, request]);
+
+	useEffect(() => {
+		getUserGroups();
+	}, [getUserGroups]);
 
 	const logoutHandler = (event) => {
 		event.preventDefault();
