@@ -31,7 +31,7 @@ export const Sidebar = (props) => {
 				},
 			);
 
-			setUserGroups(data[0].group_ids);
+			setUserGroups(data.group_ids);
 		} catch (e) {}
 	}, [auth.token, auth.userId, request]);
 
