@@ -1,17 +1,11 @@
-import React, {
-	useState,
-	useEffect,
-	useCallback,
-	useContext,
-	useRef,
-} from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
 import { Loader } from '../Loader/Loader';
 import { UsersListItem } from './UsersListItem';
-
-import { Form, Button } from 'react-bootstrap';
 import { UserItem } from './UserItem';
+
+import { Form, Button, Toast } from 'react-bootstrap';
 
 export const UsersList = () => {
 	const { loading, request } = useHttp();
@@ -19,10 +13,10 @@ export const UsersList = () => {
 	const [user, setUser] = useState(null);
 	const [usersGroups, setUsersGroups] = useState([]);
 	const [groups, setGroups] = useState([]);
-	const [selectedUser, setSelectedUser] = useState('');
 	const [userAddGroup, setUserAddGroup] = useState('');
 	const [userRemoveGroup, setUserRemoveGroup] = useState('');
 	const [findUser, setFindUser] = useState('');
+	const [showNotfindUser, setShowNotfindUser] = useState(false);
 	const { token } = useContext(AuthContext);
 	const [form, setForm] = useState({
 		name: '',
@@ -82,11 +76,11 @@ export const UsersList = () => {
 	};
 
 	const getUserGroups = (userId) => {
-		const user_groups = usersGroups.filter((group) => group.user_id === userId);
+		const user_groups = usersGroups.find((group) => group.user_id === userId);
 		const userGroupsArr = [];
 
-		if (user_groups[0]) {
-			const { group_ids } = user_groups[0];
+		if (user_groups) {
+			const { group_ids } = user_groups;
 			group_ids.forEach((id) => {
 				const group = getGroupName(id);
 				userGroupsArr.push(group);
@@ -127,6 +121,10 @@ export const UsersList = () => {
 			});
 			if (filteredUser) {
 				setUser(filteredUser);
+				setFindUser('');
+			} else {
+				setUser(null);
+				setShowNotfindUser(true);
 			}
 		}
 	};
@@ -174,17 +172,7 @@ export const UsersList = () => {
 	return (
 		<>
 			<div className="widget__wrapper has-shadow">
-				<div className="widget__body">
-					<UsersListItem
-						users={users}
-						selectUserHandler={selectUserHandler}
-						getUserGroups={getUserGroups}
-					/>
-				</div>
-			</div>
-
-			<div className="widget__wrapper widget__user--update has-shadow">
-				<div className="widget__header" id={selectedUser}>
+				<div className="widget__header">
 					<Form.Group controlId="findByEmeil" className="form__find-user">
 						<Form.Label>Найти пользователя по Email</Form.Label>
 						<Form.Control
@@ -195,6 +183,37 @@ export const UsersList = () => {
 							onKeyPress={findUserHandler}
 						/>
 					</Form.Group>
+					<Toast
+						style={{
+							position: 'absolute',
+							top: '30px',
+							right: '30px',
+							color: 'red',
+							fontSize: '1rem',
+							fontWeight: 500,
+						}}
+						onClose={() => setShowNotfindUser(false)}
+						show={showNotfindUser}
+						delay={3000}
+						autohide
+					>
+						<Toast.Body>Пользователь не найден.</Toast.Body>
+					</Toast>
+				</div>
+				<div className="widget__body">
+					<UsersListItem
+						users={users}
+						selectUserHandler={selectUserHandler}
+						getUserGroups={getUserGroups}
+					/>
+				</div>
+			</div>
+
+			<div
+				id="editUserWidget"
+				className="widget__wrapper widget__user--update has-shadow"
+			>
+				<div className="widget__header">
 					<h4 className="widget__title">Редактировать пользователя</h4>
 				</div>
 				<div className="widget__body">
