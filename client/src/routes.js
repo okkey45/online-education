@@ -10,6 +10,7 @@ import { TrainingDetailPage } from './pages/TrainingDetailPage';
 import { SubjectCreatePage } from './pages/SubjectCreatePage';
 import { SubjectEditPage } from './pages/SubjectEditPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { DevelopersPage } from './pages/DevelopersPage';
 
 export const useRoutes = (isAuthenticated) => {
 	if (isAuthenticated) {
@@ -41,6 +42,9 @@ export const useRoutes = (isAuthenticated) => {
 				</Route>
 				<Route path="/profile" exact>
 					<ProfilePage />
+				</Route>
+				<Route path="/developers" exact>
+					<DevelopersPage />
 				</Route>
 				<Redirect to="/home" />
 			</Switch>
