@@ -4,7 +4,6 @@ import { AuthContext } from '../../context/AuthContext';
 import { Loader } from '../Loader/Loader';
 import { UsersListItem } from './UsersListItem';
 import { UserItem } from './UserItem';
-import { UserCreate } from './UserCreate';
 
 import { Form, Button } from 'react-bootstrap';
 
@@ -230,8 +229,6 @@ export const UsersList = () => {
 					</Form>
 				</div>
 			</div>
-
-			<UserCreate />
 		</>
 	);
 };

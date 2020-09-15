@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -7,12 +7,27 @@ import { Form, Button } from 'react-bootstrap';
 export const UserCreate = () => {
 	const { loading, request } = useHttp();
 	const { token } = useContext(AuthContext);
+	const [groups, setGroups] = useState([]);
 	const [user, setUser] = useState();
+	const [userAddGroup, setUserAddGroup] = useState();
 	const [form, setForm] = useState({
 		name: '',
 		email: '',
 		password: '',
 	});
+
+	const getGroups = useCallback(async () => {
+		try {
+			const data = await request('/api/group', 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setGroups(data);
+		} catch (e) {}
+	}, [token, request]);
+
+	useEffect(() => {
+		getGroups();
+	}, [getGroups]);
 
 	const getUser = useCallback(
 		async (userId) => {
@@ -24,7 +39,7 @@ export const UserCreate = () => {
 				setUser(data);
 			} catch (e) {}
 		},
-		[request],
+		[request, token],
 	);
 
 	const changeHandler = (event) => {
@@ -47,13 +62,14 @@ export const UserCreate = () => {
 			getUser(data.userId);
 			//auth.login(data.token, data.userId);
 		} catch (e) {}
-	}, [request, token, form, getUser]);
+	}, [request, form, getUser]);
+
+	const addUserToGroupHandler = (event) => {
+		setUserAddGroup(event.target.value);
+	};
 
 	return (
 		<div className="widget__wrapper has-shadow">
-			<div className="widget__header">
-				<h4 className="widget__title">Добавить пользователя</h4>
-			</div>
 			<div className="widget__body">
 				{user && <h4 className="widget__title mb-4">Пользователь добавлен</h4>}
 				<Form className="form__create-user">
@@ -83,6 +99,26 @@ export const UserCreate = () => {
 							value={form.password}
 							onChange={changeHandler}
 						/>
+					</Form.Group>
+					<Form.Group controlId="inputEditGroup" className="mb-3">
+						<Form.Label>Добавить пользователя в группу</Form.Label>
+						<Form.Control
+							as="select"
+							name="user_groups"
+							value={userAddGroup}
+							onChange={addUserToGroupHandler}
+						>
+							<option value="">Выберите группу</option>
+							{groups.map((el, i) => {
+								if (el._id !== '5f537698623f050aa4a2f3ab') {
+									return (
+										<option key={i} value={el._id}>
+											{el.name}
+										</option>
+									);
+								}
+							})}
+						</Form.Control>
 					</Form.Group>
 					<Button
 						className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
