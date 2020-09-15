@@ -48,8 +48,9 @@ export const Layout = ({ page, content }) => {
 						</Container>
 					</div>
 				)}
-				<Footer />
+				{/* <Footer /> */}
 			</div>
+			<Footer />
 		</div>
 	);
 };
