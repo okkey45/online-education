@@ -56,9 +56,13 @@ router.post(
 
 			await user_groups.save(); */
 
-			const token = jwt.sign({ userId: user._id }, config.get('jwtSecret'), {
-				expiresIn: '12h',
-			});
+			const token = jwt.sign(
+				{ userId: user._id, userRoles: user.roles },
+				config.get('jwtSecret'),
+				{
+					expiresIn: '12h',
+				},
+			);
 
 			res.json({ token, userId: user._id });
 		} catch (e) {
@@ -103,11 +107,15 @@ router.post(
 					.json({ message: 'Не верный пароль, попробуйте снова' });
 			}
 
-			const token = jwt.sign({ userId: user.id }, config.get('jwtSecret'), {
-				expiresIn: '12h',
-			});
+			const token = jwt.sign(
+				{ userId: user.id, userRoles: user.roles },
+				config.get('jwtSecret'),
+				{
+					expiresIn: '12h',
+				},
+			);
 
-			res.json({ token, userId: user.id });
+			res.json({ token, userId: user.id, userRoles: user.roles });
 		} catch (e) {
 			res
 				.status(500)

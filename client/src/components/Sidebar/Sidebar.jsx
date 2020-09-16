@@ -13,31 +13,12 @@ import { ReactComponent as LogOut } from '../../img/logout.svg';
 export const Sidebar = (props) => {
 	const history = useHistory();
 	const auth = useContext(AuthContext);
-	const [userGroups, setUserGroups] = useState();
-	const { loading, request } = useHttp();
 
 	const dropdownToggler = (event) => {
 		event.target.closest('.sb-dropdown').classList.toggle('open');
 	};
 
-	const getUserGroups = useCallback(async () => {
-		try {
-			const data = await request(
-				`/api/user_groups/${auth.userId}`,
-				'GET',
-				null,
-				{
-					Authorization: `Bearer ${auth.token}`,
-				},
-			);
-
-			setUserGroups(data.group_ids);
-		} catch (e) {}
-	}, [auth.token, auth.userId, request]);
-
-	useEffect(() => {
-		getUserGroups();
-	}, [getUserGroups]);
+	console.log(auth);
 
 	const logoutHandler = (event) => {
 		event.preventDefault();
@@ -45,15 +26,11 @@ export const Sidebar = (props) => {
 		history.push('/');
 	};
 
-	if (loading || !userGroups) {
-		return <Loader />;
-	}
-
 	return (
 		<div className="sidebar sidebar__default">
 			<div className={`side-navbar${props.sidebarShrink ? ' shrink' : ''}`}>
 				<Nav className="side-navbar__list flex-column flex-nowrap">
-					{userGroups.includes('5f53768c623f050aa4a2f3aa') && (
+					{auth.userRoles.includes('admin') && (
 						<li className="side-navbar__item sb-dropdown">
 							<span
 								className="side-navbar__link sb-dropdown__toggler"
