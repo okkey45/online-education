@@ -14,6 +14,7 @@ export const UserCreate = () => {
 		name: '',
 		email: '',
 		password: '',
+		roles: '',
 	});
 
 	const getGroups = useCallback(async () => {
@@ -99,6 +100,21 @@ export const UserCreate = () => {
 							value={form.password}
 							onChange={changeHandler}
 						/>
+					</Form.Group>
+					<Form.Group controlId="inputAddRole" className="mb-3">
+						<Form.Label>Установить роль пользователя</Form.Label>
+						<Form.Control
+							as="select"
+							name="roles"
+							value={form.roles}
+							onChange={changeHandler}
+						>
+							<option value="">Выберите роль пользователя</option>
+							<option value="admin">Администратор</option>
+							<option value="teacher">Преподаватель</option>
+							<option value="curator">Куратор</option>
+							<option value="student">Студент</option>
+						</Form.Control>
 					</Form.Group>
 					<Form.Group controlId="inputEditGroup" className="mb-3">
 						<Form.Label>Добавить пользователя в группу</Form.Label>
