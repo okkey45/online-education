@@ -1,9 +1,7 @@
 import React, { useContext, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { useHttp } from '../../hooks/http.hook';
 
-import { Loader } from '../Loader/Loader';
 import { Nav } from 'react-bootstrap';
 import { ReactComponent as IconUsers } from '../../img/users.svg';
 import { ReactComponent as IconUser } from '../../img/user.svg';
@@ -18,8 +16,6 @@ export const Sidebar = (props) => {
 		event.target.closest('.sb-dropdown').classList.toggle('open');
 	};
 
-	console.log(auth);
-
 	const logoutHandler = (event) => {
 		event.preventDefault();
 		auth.logout();
@@ -30,7 +26,7 @@ export const Sidebar = (props) => {
 		<div className="sidebar sidebar__default">
 			<div className={`side-navbar${props.sidebarShrink ? ' shrink' : ''}`}>
 				<Nav className="side-navbar__list flex-column flex-nowrap">
-					{auth.userRoles.includes('admin') && (
+					{auth.userRoles && auth.userRoles.includes('admin') && (
 						<li className="side-navbar__item sb-dropdown">
 							<span
 								className="side-navbar__link sb-dropdown__toggler"

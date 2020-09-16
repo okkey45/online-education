@@ -115,7 +115,7 @@ router.post(
 				},
 			);
 
-			res.json({ token, userId: user.id, userRoles: user.roles });
+			res.json({ token, userId: user.id });
 		} catch (e) {
 			res
 				.status(500)
