@@ -28,7 +28,10 @@ router.post(
 				});
 			}
 
-			const { name, email, password, roles = 'all' } = req.body;
+			const { name, email, password, roles } = req.body;
+
+			const rolesArr = [];
+			roles ? rolesArr.push('all', roles) : rolesArr.push('all');
 
 			const candidate = await User.findOne({ email });
 
@@ -43,7 +46,7 @@ router.post(
 				name,
 				email,
 				password: hashedPassword,
-				roles,
+				roles: rolesArr,
 			});
 
 			await user.save();
