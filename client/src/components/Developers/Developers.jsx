@@ -21,7 +21,6 @@ export const Developers = () => {
 				Authorization: `Bearer ${token}`,
 			});
             setUsers(data);
-           
 		} catch (e) {}
 	}, [token, request]);
 
