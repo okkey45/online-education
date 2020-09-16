@@ -4,6 +4,7 @@ import { AuthPage } from './pages/AuthPage';
 import { HomePage } from './pages/HomePage';
 import { GroupsPage } from './pages/GroupsPage';
 import { UsersPage } from './pages/UsersPage';
+import { UserCreatePage } from './pages/UserCreatePage';
 import { TrainingsPage } from './pages/TrainingsPage';
 import { TrainingCreatePage } from './pages/TrainingCreatePage';
 import { TrainingDetailPage } from './pages/TrainingDetailPage';
@@ -23,6 +24,9 @@ export const useRoutes = (isAuthenticated) => {
 				</Route>
 				<Route path="/users" exact>
 					<UsersPage />
+				</Route>
+				<Route path="/user/create" exact>
+					<UserCreatePage />
 				</Route>
 				<Route path="/trainings" exact>
 					<TrainingsPage />
