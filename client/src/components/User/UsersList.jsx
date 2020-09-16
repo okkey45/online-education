@@ -1,17 +1,11 @@
-import React, {
-	useState,
-	useEffect,
-	useCallback,
-	useContext,
-	useRef,
-} from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
 import { Loader } from '../Loader/Loader';
 import { UsersListItem } from './UsersListItem';
+import { UserItem } from './UserItem';
 
 import { Form, Button } from 'react-bootstrap';
-import { UserItem } from './UserItem';
 
 export const UsersList = () => {
 	const { loading, request } = useHttp();
@@ -94,17 +88,6 @@ export const UsersList = () => {
 		}
 
 		return userGroupsArr;
-	};
-
-	const changeHandler = (event) => {
-		setForm({ ...form, [event.target.name]: event.target.value });
-	};
-
-	const saveHandler = async (event) => {
-		try {
-			await request('/api/user/create', 'POST', { ...form });
-			setForm({ name: '', description: '' });
-		} catch (e) {}
 	};
 
 	const selectUserHandler = (event) => {
@@ -242,42 +225,6 @@ export const UsersList = () => {
 							onClick={updateUserGroups}
 						>
 							Сохранить изменения
-						</Button>
-					</Form>
-				</div>
-			</div>
-
-			<div className="widget__wrapper has-shadow">
-				<div className="widget__header">
-					<h4 className="widget__title">Добавить пользователя</h4>
-				</div>
-				<div className="widget__body">
-					<Form className="form__createGroup">
-						<Form.Group controlId="inputName" className="mb-3">
-							<Form.Label>Название группы</Form.Label>
-							<Form.Control
-								type="text"
-								name="name"
-								value={form.name}
-								onChange={changeHandler}
-							/>
-						</Form.Group>
-						<Form.Group controlId="inputDescription" className="mb-3">
-							<Form.Label>Описание группы</Form.Label>
-							<Form.Control
-								type="text"
-								name="description"
-								value={form.description}
-								onChange={changeHandler}
-							/>
-						</Form.Group>
-						<Button
-							className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
-							type="submit"
-							onClick={saveHandler}
-							disabled={loading}
-						>
-							Сохранить
 						</Button>
 					</Form>
 				</div>
