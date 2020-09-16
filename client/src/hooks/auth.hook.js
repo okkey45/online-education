@@ -42,7 +42,7 @@ export const useAuth = () => {
 			}
 		}
 		setReady(true);
-	}, [login]);
+	}, [login, logout]);
 
 	return { login, logout, token, userId, userRoles, ready };
 };
