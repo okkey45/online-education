@@ -8,6 +8,7 @@ export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
 					<tr>
 						<th>Имя</th>
 						<th>Email</th>
+						<th>Роли</th>
 						<th>Группы</th>
 						<th>Действия</th>
 					</tr>
@@ -20,6 +21,18 @@ export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
 							<tr key={user._id}>
 								<td>{user.name}</td>
 								<td>{user.email}</td>
+								<td>
+									{user.roles.length > 0 &&
+										user.roles.map((el, i) => {
+											if (el !== 'all') {
+												return (
+													<span key={i} className="d-block mb-2">
+														{el}
+													</span>
+												);
+											}
+										})}
+								</td>
 								<td>
 									{user_groups.length > 0 &&
 										user_groups.map((el, i) => {
