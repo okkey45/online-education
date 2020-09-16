@@ -28,7 +28,7 @@ router.post(
 				});
 			}
 
-			const { name, email, password } = req.body;
+			const { name, email, password, roles = 'all' } = req.body;
 
 			const candidate = await User.findOne({ email });
 
@@ -43,17 +43,18 @@ router.post(
 				name,
 				email,
 				password: hashedPassword,
+				roles,
 			});
 
 			await user.save();
 
 			// Добавить пользователя в группу Все пользователи
-			const user_groups = new User_Groups({
+			/* const user_groups = new User_Groups({
 				user_id: user._id,
 				group_ids: '5f537698623f050aa4a2f3ab',
 			});
 
-			await user_groups.save();
+			await user_groups.save(); */
 
 			const token = jwt.sign({ userId: user._id }, config.get('jwtSecret'), {
 				expiresIn: '12h',
