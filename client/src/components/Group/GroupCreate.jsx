@@ -143,6 +143,8 @@ export const GroupCreate = () => {
 												{el.name}
 											</option>
 										);
+
+									return null;
 								})}
 						</Form.Control>
 					</Form.Group>
