@@ -13,8 +13,8 @@ export const Footer = () => {
 				<a href="/" className="footer__link">
 					Documentation
 				</a>
-				<a href="/" className="footer__link">
-					Changelog
+				<a href="/developers" className="footer__link">
+					Разработчики
 				</a>
 			</div>
 		</footer>
