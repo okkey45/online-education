@@ -3,8 +3,6 @@ import React from 'react';
 export const UserItem = ({ user, getUserGroups, selectUserHandler }) => {
 	const user_groups = getUserGroups(user._id);
 
-	console.log(user_groups);
-	console.log(user._id);
 	return (
 		<div className="table-responsive mb-3">
 			<table className="table table-hover mb-0">
