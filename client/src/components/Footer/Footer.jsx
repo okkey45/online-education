@@ -5,12 +5,8 @@ export const Footer = () => {
 		<footer className="footer__main fixed-footer">
 			<div className="dev">
 				Powered By{' '}
-				<a
-					href="https://ChalinClub.ru"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					ChalinClub.ru
+				<a href="/" target="_blank" rel="noopener noreferrer">
+					Team #olive
 				</a>
 			</div>
 			<div className="footer__links">
