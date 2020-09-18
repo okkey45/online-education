@@ -43,6 +43,11 @@ export const Sidebar = (props) => {
 									</Link>
 								</li>
 								<li className="nav-item sb-dropdown__item">
+									<Link to="/group/create" className="sb-dropdown__link">
+										Добавить группу
+									</Link>
+								</li>
+								<li className="nav-item sb-dropdown__item">
 									<Link to="/users" className="sb-dropdown__link">
 										Пользователи
 									</Link>

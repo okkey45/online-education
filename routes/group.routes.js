@@ -6,16 +6,17 @@ const router = Router();
 
 router.post('/create', [auth, generateCode], async (req, res) => {
 	try {
-		const { name, description, character_code } = req.body;
+		const { name, description, character_code, training_id } = req.body;
 
 		const group = new Group({
 			name,
 			description,
 			character_code,
+			training_id,
 		});
 
 		await group.save();
-		res.status(201).json({ group });
+		res.status(201).json(group);
 	} catch (e) {
 		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
 	}
