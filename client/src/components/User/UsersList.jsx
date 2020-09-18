@@ -5,16 +5,17 @@ import { Loader } from '../Loader/Loader';
 import { UsersListItem } from './UsersListItem';
 import { UserItem } from './UserItem';
 
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Toast } from 'react-bootstrap';
 
 export const UsersList = () => {
 	const { loading, request } = useHttp();
 	const [users, setUsers] = useState([]);
-	const [user, setUser] = useState(null);
+	const [user, setUser] = useState();
 	const [usersGroups, setUsersGroups] = useState([]);
 	const [groups, setGroups] = useState([]);
 	const [selectedUser, setSelectedUser] = useState('');
 	const [findUser, setFindUser] = useState('');
+	const [showNotfindUser, setShowNotfindUser] = useState(false);
 	const { token } = useContext(AuthContext);
 	const [form, setForm] = useState({
 		name: '',
@@ -74,11 +75,11 @@ export const UsersList = () => {
 	};
 
 	const getUserGroups = (userId) => {
-		const user_groups = usersGroups.filter((group) => group.user_id === userId);
+		const user_groups = usersGroups.find((group) => group.user_id === userId);
 		const userGroupsArr = [];
 
-		if (user_groups[0]) {
-			const { group_ids } = user_groups[0];
+		if (user_groups) {
+			const { group_ids } = user_groups;
 			group_ids.forEach((id) => {
 				const group = getGroupName(id);
 				userGroupsArr.push(group);
@@ -92,22 +93,22 @@ export const UsersList = () => {
 		const userId = event.target.closest('span').dataset.id;
 
 		if (userId) {
-			const filteredUser = users.find((user) => {
-				return user._id === userId;
-			});
-			if (filteredUser) {
-				setUser(filteredUser);
-			}
+			const filteredUser = users.find((user) => user._id === userId);
+
+			if (filteredUser) setUser(filteredUser);
 		}
 	};
 
 	const findUserHandler = (event) => {
 		if (event.key === 'Enter' && findUser) {
-			const filteredUser = users.find((user) => {
-				return user.email.includes(findUser);
-			});
+			const filteredUser = users.find((user) => user.email.includes(findUser));
+
 			if (filteredUser) {
 				setUser(filteredUser);
+				setFindUser('');
+			} else {
+				setUser(null);
+				setShowNotfindUser(true);
 			}
 		}
 	};
@@ -121,7 +122,42 @@ export const UsersList = () => {
 	return (
 		<>
 			<div className="widget__wrapper has-shadow">
+				<div className="widget__header">
+					<Form.Group controlId="findByEmeil" className="form__find-user">
+						<Form.Label>Найти пользователя по Email</Form.Label>
+						<Form.Control
+							type="text"
+							name="find_by_emeil"
+							value={findUser}
+							onChange={(e) => setFindUser(e.target.value)}
+							onKeyPress={findUserHandler}
+						/>
+					</Form.Group>
+					<Toast
+						style={{
+							position: 'absolute',
+							top: '30px',
+							right: '30px',
+							color: 'red',
+							fontSize: '1rem',
+							fontWeight: 500,
+						}}
+						onClose={() => setShowNotfindUser(false)}
+						show={showNotfindUser}
+						delay={3000}
+						autohide
+					>
+						<Toast.Body>Пользователь не найден.</Toast.Body>
+					</Toast>
+				</div>
 				<div className="widget__body">
+					{user && (
+						<UserItem
+							user={user}
+							getUserGroups={getUserGroups}
+							selectUserHandler={selectUserHandler}
+						/>
+					)}
 					<UsersListItem
 						users={users}
 						selectUserHandler={selectUserHandler}

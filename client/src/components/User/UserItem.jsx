@@ -1,8 +1,8 @@
 import React from 'react';
 
-export const UserItem = ({ user, getUserGroups }) => {
+export const UserItem = ({ user, getUserGroups, selectUserHandler }) => {
 	const user_groups = getUserGroups(user._id);
-console.log(user_groups);
+
 	return (
 		<div className="table-responsive mb-3">
 			<table className="table table-hover mb-0">
@@ -33,6 +33,14 @@ console.log(user_groups);
 								})}
 						</td>
 						<td className="td-actions">
+							<span
+								className="td-actions__link"
+								title="Редактировать"
+								data-id={user._id}
+								onClick={selectUserHandler}
+							>
+								<i className="la la-edit edit"></i>
+							</span>
 							<span
 								className="td-actions__link"
 								title="Удалить"
