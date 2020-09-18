@@ -7,7 +7,7 @@ export const GroupsPage = () => {
 		<Layout
 			page={{
 				name: 'Группы пользователей',
-				title: 'Группы пользователей - MyNewLife club',
+				title: 'Группы пользователей - Онлайн обучение',
 			}}
 			content={<GroupsList />}
 		/>

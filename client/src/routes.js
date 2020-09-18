@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { AuthPage } from './pages/AuthPage';
 import { HomePage } from './pages/HomePage';
 import { GroupsPage } from './pages/GroupsPage';
+import { GroupCreatePage } from './pages/GroupCreatePage';
 import { UsersPage } from './pages/UsersPage';
 import { UserCreatePage } from './pages/UserCreatePage';
 import { TrainingsPage } from './pages/TrainingsPage';
@@ -21,6 +22,9 @@ export const useRoutes = (isAuthenticated) => {
 				</Route>
 				<Route path="/groups" exact>
 					<GroupsPage />
+				</Route>
+				<Route path="/group/create" exact>
+					<GroupCreatePage />
 				</Route>
 				<Route path="/users" exact>
 					<UsersPage />
