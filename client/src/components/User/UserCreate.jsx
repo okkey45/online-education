@@ -126,13 +126,11 @@ export const UserCreate = () => {
 						>
 							<option value="">Выберите группу</option>
 							{groups.map((el, i) => {
-								if (el._id !== '5f537698623f050aa4a2f3ab') {
-									return (
-										<option key={i} value={el._id}>
-											{el.name}
-										</option>
-									);
-								}
+								return (
+									<option key={i} value={el._id}>
+										{el.name}
+									</option>
+								);
 							})}
 						</Form.Control>
 					</Form.Group>
