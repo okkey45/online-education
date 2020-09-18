@@ -10,7 +10,7 @@ import { Form, Button, Toast } from 'react-bootstrap';
 export const UsersList = () => {
 	const { loading, request } = useHttp();
 	const [users, setUsers] = useState([]);
-	const [user, setUser] = useState(null);
+	const [user, setUser] = useState();
 	const [usersGroups, setUsersGroups] = useState([]);
 	const [groups, setGroups] = useState([]);
 	const [userAddGroup, setUserAddGroup] = useState('');
@@ -94,20 +94,16 @@ export const UsersList = () => {
 		const userId = event.target.closest('span').dataset.id;
 
 		if (userId) {
-			const filteredUser = users.find((user) => {
-				return user._id === userId;
-			});
-			if (filteredUser) {
-				setUser(filteredUser);
-			}
+			const filteredUser = users.find((user) => user._id === userId);
+
+			if (filteredUser) setUser(filteredUser);
 		}
 	};
 
 	const findUserHandler = (event) => {
 		if (event.key === 'Enter' && findUser) {
-			const filteredUser = users.find((user) => {
-				return user.email.includes(findUser);
-			});
+			const filteredUser = users.find((user) => user.email.includes(findUser));
+
 			if (filteredUser) {
 				setUser(filteredUser);
 				setFindUser('');
@@ -128,11 +124,13 @@ export const UsersList = () => {
 		setUserRemoveGroup(event.target.value);
 	};
 
-	const updateUserGroups = useCallback(() => {
+	/* const updateUserGroups = useCallback(() => {
 		if (user && usersGroups) {
 			const user_groups = usersGroups.filter(
 				(group) => group.user_id === user._id,
 			);
+
+			console.log(user_groups);
 
 			const userGroupsObj = user_groups[0];
 
@@ -148,11 +146,11 @@ export const UsersList = () => {
 			if (checkGroup(userRemoveGroup) >= 0 && userRemoveGroup)
 				userGroupsObj.group_ids.splice(checkGroup(userRemoveGroup), 1);
 		}
-	}, [user, usersGroups, userAddGroup, userRemoveGroup]);
+	}, [user, usersGroups, userAddGroup, userRemoveGroup]); */
 
-	useEffect(() => {
+	/* useEffect(() => {
 		updateUserGroups();
-	}, [updateUserGroups]);
+	}, [updateUserGroups]); */
 
 	if (loading) {
 		return <Loader />;
@@ -190,6 +188,13 @@ export const UsersList = () => {
 					</Toast>
 				</div>
 				<div className="widget__body">
+					{user && (
+						<UserItem
+							user={user}
+							getUserGroups={getUserGroups}
+							selectUserHandler={selectUserHandler}
+						/>
+					)}
 					<UsersListItem
 						users={users}
 						selectUserHandler={selectUserHandler}
@@ -206,7 +211,6 @@ export const UsersList = () => {
 					<h4 className="widget__title">Редактировать пользователя</h4>
 				</div>
 				<div className="widget__body">
-					{user && <UserItem user={user} getUserGroups={getUserGroups} />}
 					<Form className="form__createGroup">
 						<Form.Group controlId="inputEditGroup" className="mb-3">
 							<Form.Label>Добавить пользователя в группу</Form.Label>
@@ -247,7 +251,7 @@ export const UsersList = () => {
 							className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
 							type="submit"
 							disabled={loading}
-							onClick={updateUserGroups}
+							//onClick={updateUserGroups}
 						>
 							Сохранить изменения
 						</Button>

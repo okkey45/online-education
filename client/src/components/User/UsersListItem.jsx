@@ -1,7 +1,8 @@
 import React from 'react';
 
 export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
-	console.log(users);
+	//console.log(users);
+
 	return (
 		<div className="table-responsive">
 			<table className="table table-hover mb-0">
