@@ -13,15 +13,9 @@ export const UsersList = () => {
 	const [user, setUser] = useState();
 	const [usersGroups, setUsersGroups] = useState([]);
 	const [groups, setGroups] = useState([]);
-	const [selectedUser, setSelectedUser] = useState('');
 	const [findUser, setFindUser] = useState('');
 	const [showNotfindUser, setShowNotfindUser] = useState(false);
 	const { token } = useContext(AuthContext);
-	const [form, setForm] = useState({
-		name: '',
-		email: '',
-		user_groups: [],
-	});
 
 	const getUsers = useCallback(async () => {
 		try {
@@ -89,7 +83,7 @@ export const UsersList = () => {
 		return userGroupsArr;
 	};
 
-	const selectUserHandler = (event) => {
+	/* const selectUserHandler = (event) => {
 		const userId = event.target.closest('span').dataset.id;
 
 		if (userId) {
@@ -97,7 +91,7 @@ export const UsersList = () => {
 
 			if (filteredUser) setUser(filteredUser);
 		}
-	};
+	}; */
 
 	const findUserHandler = (event) => {
 		if (event.key === 'Enter' && findUser) {
@@ -112,8 +106,6 @@ export const UsersList = () => {
 			}
 		}
 	};
-
-	// Продумать оптимизацию filteredUser()
 
 	if (loading) {
 		return <Loader />;
@@ -151,18 +143,8 @@ export const UsersList = () => {
 					</Toast>
 				</div>
 				<div className="widget__body">
-					{user && (
-						<UserItem
-							user={user}
-							getUserGroups={getUserGroups}
-							selectUserHandler={selectUserHandler}
-						/>
-					)}
-					<UsersListItem
-						users={users}
-						selectUserHandler={selectUserHandler}
-						getUserGroups={getUserGroups}
-					/>
+					{user && <UserItem user={user} getUserGroups={getUserGroups} />}
+					<UsersListItem users={users} getUserGroups={getUserGroups} />
 				</div>
 			</div>
 		</>

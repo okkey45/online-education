@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { Nav } from 'react-bootstrap';
 import { ReactComponent as IconUsers } from '../../img/users.svg';
 import { ReactComponent as IconUser } from '../../img/user.svg';
+import { ReactComponent as IconUserTwo } from '../../img/user-2.svg';
 import { ReactComponent as IconFile } from '../../img/file.svg';
 import { ReactComponent as OpenBook } from '../../img/open-book.svg';
 import { ReactComponent as LogOut } from '../../img/logout.svg';
@@ -28,44 +29,51 @@ export const Sidebar = (props) => {
 			<div className={`side-navbar${props.sidebarShrink ? ' shrink' : ''}`}>
 				<Nav className="side-navbar__list flex-column flex-nowrap">
 					{auth.userRoles && auth.userRoles.includes('admin') && (
-						<li className="side-navbar__item sb-dropdown">
-							<span
-								className="side-navbar__link sb-dropdown__toggler"
-								onClick={dropdownToggler}
-							>
-								<IconUsers className="side-navbar__icon icon-group" />
-								<span className="side-navbar__link--title">Пользователи</span>
-							</span>
-							<ul className="nav sb-dropdown__menu flex-column">
-								<li className="nav-item sb-dropdown__item">
-									<Link to="/groups" className="sb-dropdown__link">
-										Группы
-									</Link>
-								</li>
-								<li className="nav-item sb-dropdown__item">
-									<Link to="/group/create" className="sb-dropdown__link">
-										Добавить группу
-									</Link>
-								</li>
-								<li className="nav-item sb-dropdown__item">
-									<Link to="/users" className="sb-dropdown__link">
-										Пользователи
-									</Link>
-								</li>
-								<li className="nav-item sb-dropdown__item">
-									<Link to="/user/create" className="sb-dropdown__link">
-										Добавить пользователя
-									</Link>
-								</li>
-							</ul>
-						</li>
+						<>
+							<li className="side-navbar__item sb-dropdown">
+								<span
+									className="side-navbar__link sb-dropdown__toggler"
+									onClick={dropdownToggler}
+								>
+									<IconUserTwo className="side-navbar__icon icon-group" />
+									<span className="side-navbar__link--title">Пользователи</span>
+								</span>
+								<ul className="nav sb-dropdown__menu flex-column">
+									<li className="nav-item sb-dropdown__item">
+										<Link to="/users" className="sb-dropdown__link">
+											Все пользователи
+										</Link>
+									</li>
+									<li className="nav-item sb-dropdown__item">
+										<Link to="/user/create" className="sb-dropdown__link">
+											Добавить пользователя
+										</Link>
+									</li>
+								</ul>
+							</li>
+							<li className="side-navbar__item sb-dropdown">
+								<span
+									className="side-navbar__link sb-dropdown__toggler"
+									onClick={dropdownToggler}
+								>
+									<IconUsers className="side-navbar__icon icon-group" />
+									<span className="side-navbar__link--title">Группы</span>
+								</span>
+								<ul className="nav sb-dropdown__menu flex-column">
+									<li className="nav-item sb-dropdown__item">
+										<Link to="/groups" className="sb-dropdown__link">
+											Все группы
+										</Link>
+									</li>
+									<li className="nav-item sb-dropdown__item">
+										<Link to="/group/create" className="sb-dropdown__link">
+											Добавить группу
+										</Link>
+									</li>
+								</ul>
+							</li>
+						</>
 					)}
-					<li className="side-navbar__item">
-						<Link to="/profile" className="side-navbar__link">
-							<IconUser className="side-navbar__icon icon-user" />
-							<span className="side-navbar__link--title">Профиль</span>
-						</Link>
-					</li>
 					<li className="side-navbar__item">
 						<Link to="/training/create" className="side-navbar__link">
 							<IconFile className="side-navbar__icon icon-user" />
@@ -87,6 +95,12 @@ export const Sidebar = (props) => {
 								</Link>
 							</li>
 						</ul>
+					</li>
+					<li className="side-navbar__item">
+						<Link to="/profile" className="side-navbar__link">
+							<IconUser className="side-navbar__icon icon-user" />
+							<span className="side-navbar__link--title">Профиль</span>
+						</Link>
 					</li>
 					<li className="side-navbar__item">
 						<a href="/" className="side-navbar__link" onClick={logoutHandler}>

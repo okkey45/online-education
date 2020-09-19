@@ -1,22 +1,83 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
+import { Loader } from '../Loader/Loader';
+import { getGroupName } from '../../utils/getGroupName';
 
 import { Form, Button } from 'react-bootstrap';
 
 export const UserEdit = () => {
+	const userId = useParams().id;
 	const { loading, request } = useHttp();
 	const { token } = useContext(AuthContext);
-	const [groups, setGroups] = useState([]);
 	const [user, setUser] = useState();
+	const [userGroups, setUserGroups] = useState();
+	const [groups, setGroups] = useState([]);
 	const [userAddGroup, setUserAddGroup] = useState('');
 	const [userRemoveGroup, setUserRemoveGroup] = useState('');
-	const [form, setForm] = useState({
-		name: '',
-		email: '',
-		password: '',
-		roles: '',
-	});
+
+	const getUser = useCallback(async () => {
+		try {
+			const data = await request(`/api/user/${userId}`, 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setUser(data);
+		} catch (e) {}
+	}, [request, token, userId]);
+
+	useEffect(() => {
+		getUser();
+	}, [getUser]);
+
+	const getUserGroups = useCallback(async () => {
+		try {
+			const data = await request(`/api/user_groups/${userId}`, 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setUserGroups(data);
+		} catch (e) {}
+	}, [token, request, userId]);
+
+	useEffect(() => {
+		getUserGroups();
+	}, [getUserGroups]);
+
+	const getGroups = useCallback(async () => {
+		try {
+			const data = await request(`/api/group`, 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setGroups(data);
+		} catch (e) {}
+	}, [token, request]);
+
+	useEffect(() => {
+		getGroups();
+	}, [getGroups]);
+
+	const changeUserGroups = useCallback(
+		async (groupId) => {
+			try {
+				const data = await request(
+					`/api/user_groups/change`,
+					'PUT',
+					{
+						user_id: user._id,
+						group_id: groupId,
+					},
+					{
+						Authorization: `Bearer ${token}`,
+					},
+				);
+				if (data) {
+					getUserGroups();
+					setUserAddGroup('');
+				}
+			} catch (e) {}
+		},
+		[token, request, user],
+	);
 
 	const addUserToGroupHandler = (event) => {
 		setUserAddGroup(event.target.value);
@@ -26,31 +87,17 @@ export const UserEdit = () => {
 		setUserRemoveGroup(event.target.value);
 	};
 
-	/* const updateUserGroups = useCallback(() => {
-		if (user && usersGroups) {
-			const user_groups = usersGroups.filter(
-				(group) => group.user_id === user._id,
-			);
+	const updateUserGroupsHandler = (event) => {
+		event.preventDefault();
 
-			const userGroupsObj = user_groups[0];
-
-			const checkGroup = (groupId) => {
-				if (userGroupsObj.group_ids.length) {
-					return userGroupsObj.group_ids.indexOf(groupId);
-				}
-			};
-
-			if (checkGroup(userAddGroup) < 0 && userAddGroup)
-				userGroupsObj.group_ids.push(userAddGroup);
-
-			if (checkGroup(userRemoveGroup) >= 0 && userRemoveGroup)
-				userGroupsObj.group_ids.splice(checkGroup(userRemoveGroup), 1);
+		if (userAddGroup) {
+			changeUserGroups(userAddGroup);
 		}
-	}, [user, usersGroups, userAddGroup, userRemoveGroup]);
+	};
 
-	useEffect(() => {
-		updateUserGroups();
-	}, [updateUserGroups]); */
+	if (loading || !user || !groups) {
+		return <Loader />;
+	}
 
 	return (
 		<div className="widget__wrapper widget__user--update has-shadow">
@@ -58,6 +105,64 @@ export const UserEdit = () => {
 				<h4 className="widget__title">Редактировать пользователя</h4>
 			</div>
 			<div className="widget__body">
+				{user && (
+					<div className="table-responsive mb-3">
+						<table className="table table-hover mb-0">
+							<thead>
+								<tr>
+									<th>Имя</th>
+									<th>Email</th>
+									<th>Роли</th>
+									<th>Группы</th>
+									<th>Действия</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr key={user._id}>
+									<td>{user.name}</td>
+									<td>{user.email}</td>
+									<td>
+										{user.roles.length > 0 &&
+											user.roles.map((el, i) => {
+												if (el !== 'all') {
+													return (
+														<span key={i} className="d-block mb-2">
+															{el}
+														</span>
+													);
+												}
+											})}
+									</td>
+									<td>
+										{userGroups &&
+											userGroups.group_ids.map((el, i) => {
+												const group = getGroupName(el, groups);
+
+												return (
+													<span
+														key={i}
+														title={group.description}
+														className="d-block mb-2"
+													>
+														{group.name}
+													</span>
+												);
+											})}
+									</td>
+									<td className="td-actions">
+										<span
+											className="td-actions__link"
+											title="Удалить"
+											data-id={user._id}
+										>
+											<i className="la la-close delete"></i>
+										</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				)}
 				<Form className="form__createGroup">
 					<Form.Group controlId="inputEditGroup" className="mb-3">
 						<Form.Label>Добавить пользователя в группу</Form.Label>
@@ -68,13 +173,15 @@ export const UserEdit = () => {
 							onChange={addUserToGroupHandler}
 						>
 							<option value="">Выберите группу</option>
-							{groups.map((el, i) => {
-								return (
-									<option key={i} value={el._id}>
-										{el.name}
-									</option>
-								);
-							})}
+							{groups &&
+								groups.length > 0 &&
+								groups.map((el, i) => {
+									return (
+										<option key={i} value={el._id}>
+											{el.name}
+										</option>
+									);
+								})}
 						</Form.Control>
 					</Form.Group>
 					<Form.Group controlId="inputGroup" className="mb-3">
@@ -98,7 +205,7 @@ export const UserEdit = () => {
 						className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
 						type="submit"
 						disabled={loading}
-						//onClick={updateUserGroups}
+						onClick={updateUserGroupsHandler}
 					>
 						Сохранить изменения
 					</Button>
