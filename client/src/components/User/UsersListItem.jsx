@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
+export const UsersListItem = ({ users, getUserGroups }) => {
 	return (
 		<div className="table-responsive">
 			<table className="table table-hover mb-0">
@@ -31,6 +32,7 @@ export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
 													</span>
 												);
 											}
+											return null;
 										})}
 								</td>
 								<td>
@@ -48,14 +50,13 @@ export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
 										})}
 								</td>
 								<td className="td-actions">
-									<span
+									<Link
+										to={`/user/edit/${user._id}`}
 										className="td-actions__link"
 										title="Редактировать"
-										data-id={user._id}
-										onClick={selectUserHandler}
 									>
 										<i className="la la-edit edit"></i>
-									</span>
+									</Link>
 									<span
 										className="td-actions__link"
 										title="Удалить"
