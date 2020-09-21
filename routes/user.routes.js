@@ -28,24 +28,22 @@ router.put("/change/:id", auth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user) {
-      const _groups = user.group_ids;
+      const _roles = user.roles;
 
-      const _currentGroup = _groups.find(
-        (group) => group._id == req.body.group_id
-      );
-      if (_currentGroup) {
+      const _currentRole = _roles.find((role) => role === req.body.role);
+      if (_currentRole) {
         res.json({
-          status: true,
+          status: false,
           message: "Данный пользователь уже состоит в этой группе",
         });
       } else {
-        _groups.push(req.body.group_id);
-        await user.updateOne({ group_ids: _groups });
+        _roles.push(req.body.role);
+        await user.updateOne({ roles: _roles });
         res.json({ status: true });
       }
     }
   } catch (e) {
-    console.log("users_groups_change_by_id__", e);
+    console.log("users_roles_change_by_id__", e);
     res.status(500).json({ message: "Что-то пошло не так, попробуйте снова" });
   }
 });
