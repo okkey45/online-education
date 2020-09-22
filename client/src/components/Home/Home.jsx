@@ -1,15 +1,54 @@
-import React from 'react';
+import React, { useState, useContext, useCallback, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { useHttp } from '../../hooks/http.hook';
+import { AuthContext } from '../../context/AuthContext';
+import { Loader } from '../Loader/Loader';
+
+import { Form, Button, Card } from 'react-bootstrap';
 
 export const Home = () => {
+	const { loading, request } = useHttp();
+	const history = useHistory();
+	const { token } = useContext(AuthContext);
+	const [trainings, setTrainings] = useState();
+	const getTrainings = useCallback(async () => {
+		try {
+			const data = await request('/api/training', 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setTrainings(data);
+		} catch (e) {}
+	}, [token, request]);
+
+	useEffect(() => {
+		getTrainings();
+	}, [getTrainings]);
+
+	if (loading || !trainings) {
+		return <Loader />;
+	}
+
 	return (
 		<>
 			<div className="widget__wrapper has-shadow">
-				<div className="widget__header">Добро пожаловать в MyNewLife club!</div>
+				<div className="widget__header">Добро пожаловать!</div>
 				<div className="widget__body home">
-					<div className="card home-training">Тренинг по психологии</div>
-					<div className="card home-training">Тренинг по психологии</div>
-					<div className="card home-training">Тренинг по психологии</div>
-					<div className="card home-training">Тренинг по психологии</div>
+					
+					{trainings.length && 
+					trainings.map((train, i) => {
+						const as = String(train._id)
+						return (
+						<Card key={i} style={{ width: '18rem' }} className="card_margin">
+					 	<Card.Img variant="top" src="https://via.placeholder.com/286px180" />
+					 	<Card.Body>
+					 		<Card.Title>{train.title}</Card.Title>
+					 		<Card.Text>{train.description.substr(0, 75) + ' ...'}</Card.Text>
+						<Link to="/"><Button variant="primary">Записаться</Button></Link>
+					 	</Card.Body>
+					 </Card> 					 
+					)
+					})}
 				</div>
 			</div>
 		</>
