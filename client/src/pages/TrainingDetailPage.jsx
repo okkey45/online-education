@@ -32,9 +32,14 @@ export const TrainingDetailPage = () => {
 		async (trainingId) => {
 			if (!trainingId) return;
 			try {
-				const data = await request(`/api/subject/${trainingId}`, 'GET', null, {
-					Authorization: `Bearer ${token}`,
-				});
+				const data = await request(
+					`/api/subject/training/${trainingId}`,
+					'GET',
+					null,
+					{
+						Authorization: `Bearer ${token}`,
+					},
+				);
 				setSubjects(data);
 			} catch (e) {}
 		},
