@@ -1,6 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
+export const UsersListItem = ({ users, getUserGroups }) => {
 	return (
 		<div className="table-responsive">
 			<table className="table table-hover mb-0">
@@ -8,6 +9,7 @@ export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
 					<tr>
 						<th>Имя</th>
 						<th>Email</th>
+						<th>Роли</th>
 						<th>Группы</th>
 						<th>Действия</th>
 					</tr>
@@ -20,6 +22,19 @@ export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
 							<tr key={user._id}>
 								<td>{user.name}</td>
 								<td>{user.email}</td>
+								<td>
+									{user.roles.length > 0 &&
+										user.roles.map((el, i) => {
+											if (el !== 'all') {
+												return (
+													<span key={i} className="d-block mb-2">
+														{el}
+													</span>
+												);
+											}
+											return null;
+										})}
+								</td>
 								<td>
 									{user_groups.length > 0 &&
 										user_groups.map((el, i) => {
@@ -35,14 +50,13 @@ export const UsersListItem = ({ users, selectUserHandler, getUserGroups }) => {
 										})}
 								</td>
 								<td className="td-actions">
-									<span
+									<Link
+										to={`/user/edit/${user._id}`}
 										className="td-actions__link"
 										title="Редактировать"
-										data-id={user._id}
-										onClick={selectUserHandler}
 									>
 										<i className="la la-edit edit"></i>
-									</span>
+									</Link>
 									<span
 										className="td-actions__link"
 										title="Удалить"

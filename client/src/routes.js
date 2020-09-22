@@ -3,13 +3,17 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { AuthPage } from './pages/AuthPage';
 import { HomePage } from './pages/HomePage';
 import { GroupsPage } from './pages/GroupsPage';
+import { GroupCreatePage } from './pages/GroupCreatePage';
 import { UsersPage } from './pages/UsersPage';
+import { UserCreatePage } from './pages/UserCreatePage';
+import { UserEditPage } from './pages/UserEditPage';
 import { TrainingsPage } from './pages/TrainingsPage';
 import { TrainingCreatePage } from './pages/TrainingCreatePage';
 import { TrainingDetailPage } from './pages/TrainingDetailPage';
 import { SubjectCreatePage } from './pages/SubjectCreatePage';
 import { SubjectEditPage } from './pages/SubjectEditPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { DevelopersPage } from './pages/DevelopersPage';
 
 export const useRoutes = (isAuthenticated) => {
 	if (isAuthenticated) {
@@ -21,8 +25,17 @@ export const useRoutes = (isAuthenticated) => {
 				<Route path="/groups" exact>
 					<GroupsPage />
 				</Route>
+				<Route path="/group/create" exact>
+					<GroupCreatePage />
+				</Route>
 				<Route path="/users" exact>
 					<UsersPage />
+				</Route>
+				<Route path="/user/create" exact>
+					<UserCreatePage />
+				</Route>
+				<Route path="/user/edit/:id">
+					<UserEditPage />
 				</Route>
 				<Route path="/trainings" exact>
 					<TrainingsPage />
@@ -41,6 +54,9 @@ export const useRoutes = (isAuthenticated) => {
 				</Route>
 				<Route path="/profile" exact>
 					<ProfilePage />
+				</Route>
+				<Route path="/developers" exact>
+					<DevelopersPage />
 				</Route>
 				<Redirect to="/home" />
 			</Switch>

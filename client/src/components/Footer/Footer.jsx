@@ -5,20 +5,16 @@ export const Footer = () => {
 		<footer className="footer__main fixed-footer">
 			<div className="dev">
 				Powered By{' '}
-				<a
-					href="https://ChalinClub.ru"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					ChalinClub.ru
+				<a href="/" target="_blank" rel="noopener noreferrer">
+					Team #olive
 				</a>
 			</div>
 			<div className="footer__links">
 				<a href="/" className="footer__link">
 					Documentation
 				</a>
-				<a href="/" className="footer__link">
-					Changelog
+				<a href="/developers" className="footer__link">
+					Разработчики
 				</a>
 			</div>
 		</footer>

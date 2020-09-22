@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const UserItem = ({ user, getUserGroups }) => {
 	const user_groups = getUserGroups(user._id);
@@ -10,6 +11,7 @@ export const UserItem = ({ user, getUserGroups }) => {
 					<tr>
 						<th>Имя</th>
 						<th>Email</th>
+						<th>Роли</th>
 						<th>Группы</th>
 						<th>Действия</th>
 					</tr>
@@ -18,6 +20,19 @@ export const UserItem = ({ user, getUserGroups }) => {
 					<tr key={user._id}>
 						<td>{user.name}</td>
 						<td>{user.email}</td>
+						<td>
+							{user.roles.length > 0 &&
+								user.roles.map((el, i) => {
+									if (el !== 'all') {
+										return (
+											<span key={i} className="d-block mb-2">
+												{el}
+											</span>
+										);
+									}
+									return null;
+								})}
+						</td>
 						<td>
 							{user_groups.length > 0 &&
 								user_groups.map((el, i) => {
@@ -33,6 +48,13 @@ export const UserItem = ({ user, getUserGroups }) => {
 								})}
 						</td>
 						<td className="td-actions">
+							<Link
+								to={`/user/edit/${user._id}`}
+								className="td-actions__link"
+								title="Редактировать"
+							>
+								<i className="la la-edit edit"></i>
+							</Link>
 							<span
 								className="td-actions__link"
 								title="Удалить"
