@@ -12,6 +12,7 @@ export const UserEdit = () => {
 	const { loading, request } = useHttp();
 	const { token } = useContext(AuthContext);
 	const [user, setUser] = useState();
+	const [userAddRole, setUserAddRole] = useState();
 	const [userGroups, setUserGroups] = useState();
 	const [groups, setGroups] = useState([]);
 	const [userAddGroup, setUserAddGroup] = useState('');
@@ -56,6 +57,27 @@ export const UserEdit = () => {
 		getGroups();
 	}, [getGroups]);
 
+	const changeUserRole = useCallback(
+		async (role) => {
+			try {
+				const data = await request(
+					`/api/user/change/${user._id}`,
+					'PUT',
+					{ role },
+					{
+						Authorization: `Bearer ${token}`,
+					},
+				);
+				console.log(data);
+				if (data) {
+					getUser();
+					setUserAddRole();
+				}
+			} catch (e) {}
+		},
+		[token, request, user],
+	);
+
 	const changeUserGroups = useCallback(
 		async (groupId) => {
 			try {
@@ -78,6 +100,18 @@ export const UserEdit = () => {
 		},
 		[token, request, user],
 	);
+
+	const userAddRoleHandler = (event) => {
+		setUserAddRole(event.target.value);
+	};
+
+	const updateUserRolesHandler = (event) => {
+		event.preventDefault();
+
+		if (userAddRole) {
+			changeUserRole(userAddRole);
+		}
+	};
 
 	const addUserToGroupHandler = (event) => {
 		setUserAddGroup(event.target.value);
@@ -163,6 +197,31 @@ export const UserEdit = () => {
 						</table>
 					</div>
 				)}
+				<Form className="form__changeUserRole">
+					<Form.Group controlId="inputAddRole" className="mb-3">
+						<Form.Label>Установить роль пользователя</Form.Label>
+						<Form.Control
+							as="select"
+							name="roles"
+							value={userAddRole}
+							onChange={userAddRoleHandler}
+						>
+							<option value="">Выберите роль пользователя</option>
+							<option value="admin">Администратор</option>
+							<option value="teacher">Преподаватель</option>
+							<option value="curator">Куратор</option>
+							<option value="student">Студент</option>
+						</Form.Control>
+					</Form.Group>
+					<Button
+						className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
+						type="submit"
+						disabled={loading}
+						onClick={updateUserRolesHandler}
+					>
+						Сохранить изменения
+					</Button>
+				</Form>
 				<Form className="form__createGroup">
 					<Form.Group controlId="inputEditGroup" className="mb-3">
 						<Form.Label>Добавить пользователя в группу</Form.Label>
