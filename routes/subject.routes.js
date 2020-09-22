@@ -24,10 +24,10 @@ router.post('/create', auth, async (req, res) => {
 	}
 });
 
-router.get('/:training_id', auth, async (req, res) => {
+router.get('/training/:id', auth, async (req, res) => {
 	try {
 		const subjects = await Subject.find({
-			training_id: req.params.training_id,
+			training_id: req.params.id,
 		});
 		res.json(subjects);
 	} catch (e) {
