@@ -11,7 +11,6 @@ import { Col } from 'react-bootstrap';
 export const TrainingDetailPage = () => {
 	const trainingId = useParams().id;
 	const [training, setTraining] = useState([]);
-	const [subjects, setSubjects] = useState([]);
 	const { loading, request } = useHttp();
 	const { token } = useContext(AuthContext);
 
@@ -28,28 +27,6 @@ export const TrainingDetailPage = () => {
 		getTraining();
 	}, [getTraining]);
 
-	const getSubjects = useCallback(
-		async (trainingId) => {
-			if (!trainingId) return;
-			try {
-				const data = await request(
-					`/api/subject/training/${trainingId}`,
-					'GET',
-					null,
-					{
-						Authorization: `Bearer ${token}`,
-					},
-				);
-				setSubjects(data);
-			} catch (e) {}
-		},
-		[token, request],
-	);
-
-	useEffect(() => {
-		getSubjects(training._id);
-	}, [getSubjects, training]);
-
 	return (
 		<Layout
 			page={{
@@ -58,19 +35,14 @@ export const TrainingDetailPage = () => {
 			}}
 			content={
 				<>
-					{(loading || !training || !subjects) && <Loader />}
-					{!loading && training && subjects && (
+					{(loading || !training) && <Loader />}
+					{!loading && training && (
 						<>
 							<Col xl={3}>
-								{!loading && subjects && (
-									<div className="widget__wrapper has-shadow">
-										<SubjectList
-											subjects={subjects}
-											trainingId={trainingId}
-											trainingTitle={training.title}
-										/>
-									</div>
-								)}
+								<SubjectList
+									trainingId={training._id}
+									trainingTitle={training.title}
+								/>
 							</Col>
 							<Col xl={9}>
 								<div className="widget__wrapper has-shadow">
