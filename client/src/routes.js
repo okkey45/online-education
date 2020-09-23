@@ -12,6 +12,7 @@ import { TrainingCreatePage } from './pages/TrainingCreatePage';
 import { TrainingDetailPage } from './pages/TrainingDetailPage';
 import { SubjectCreatePage } from './pages/SubjectCreatePage';
 import { SubjectEditPage } from './pages/SubjectEditPage';
+import { SubjectDetailPage } from './pages/SubjectDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { DevelopersPage } from './pages/DevelopersPage';
 
@@ -51,6 +52,9 @@ export const useRoutes = (isAuthenticated) => {
 				</Route>
 				<Route path="/subject/edit/:id">
 					<SubjectEditPage />
+				</Route>
+				<Route path="/subject/:id">
+					<SubjectDetailPage />
 				</Route>
 				<Route path="/profile" exact>
 					<ProfilePage />
