@@ -37,14 +37,13 @@ export const Home = () => {
 					
 					{trainings.length && 
 					trainings.map((train, i) => {
-						const as = String(train._id)
 						return (
 						<Card key={i} style={{ width: '18rem' }} className="card_margin">
 					 	<Card.Img variant="top" src="https://via.placeholder.com/286px180" />
 					 	<Card.Body>
 					 		<Card.Title>{train.title}</Card.Title>
 					 		<Card.Text>{train.description.substr(0, 75) + ' ...'}</Card.Text>
-						<Link to="/"><Button variant="primary">Записаться</Button></Link>
+						<Link to={`/training/${train._id}`}><Button variant="primary">Записаться</Button></Link>
 					 	</Card.Body>
 					 </Card> 					 
 					)
