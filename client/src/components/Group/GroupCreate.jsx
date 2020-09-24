@@ -75,19 +75,14 @@ export const GroupCreate = () => {
 	const saveHandler = async (event) => {
 		event.preventDefault();
 
-		const training = form.training.split('&', 2);
-		const trainingId = training[0];
-		const trainingTitle = training[1];
-		const groupName = `${trainingTitle} - Группа ${form.name}`;
-
 		try {
 			const data = await request(
 				'/api/group/create',
 				'POST',
 				{
-					name: groupName,
+					name: form.name,
 					description: form.description,
-					training_id: trainingId,
+					training_id: form.training,
 				},
 				{ Authorization: `Bearer ${token}` },
 			);
@@ -119,7 +114,7 @@ export const GroupCreate = () => {
 							{trainings.length &&
 								trainings.map((el, i) => {
 									return (
-										<option key={i} value={`${el._id}&${el.title}`}>
+										<option key={i} value={el._id}>
 											{el.title}
 										</option>
 									);
@@ -156,13 +151,6 @@ export const GroupCreate = () => {
 							value={form.name}
 							onChange={changeHandler}
 						/>
-						<Form.Text muted>
-							Введите только название группы. После сохранения название группы
-							будет сформировано из названия тренинга и названия группы.
-							Например: вы ввели название группы «B52» для тренинга с названием
-							«Книга рецептов», после сохранения название группы будет «Книга
-							рецептов. Группа B52».
-						</Form.Text>
 					</Form.Group>
 					<Form.Group controlId="inputDescription" className="mb-3">
 						<Form.Label>Описание группы</Form.Label>
