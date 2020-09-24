@@ -2,12 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 // import { Loader } from '../Loader/Loader';
 
-export const GroupsListItem = ({ groups, usersGroups, teachers }) => {
+export const GroupsListItem = ({
+	groups,
+	usersGroups,
+	teachers,
+	trainings,
+}) => {
 	const findTeacher = (groupId) => {
 		const group = usersGroups.find((el) => el.group_ids.includes(groupId));
 		const teacher = teachers.find((el) => el._id === group.user_id);
 
 		return teacher.name;
+	};
+
+	const findTrainingTitle = (trainingId) => {
+		const training = trainings.find((el) => el._id === trainingId);
+
+		return training.title;
 	};
 
 	return (
@@ -16,8 +27,8 @@ export const GroupsListItem = ({ groups, usersGroups, teachers }) => {
 				<thead>
 					<tr>
 						<th>Код</th>
-						<th>Название</th>
-						<th>Описание</th>
+						<th>Группа</th>
+						<th>Тренинг</th>
 						<th>Преподаватель</th>
 						<th>Действия</th>
 					</tr>
@@ -27,8 +38,8 @@ export const GroupsListItem = ({ groups, usersGroups, teachers }) => {
 						return (
 							<tr key={i}>
 								<td className="text-nowrap">{el.character_code}</td>
-								<td>{el.name}</td>
-								<td>{el.description}</td>
+								<td title={el.description}>{el.name}</td>
+								<td>{findTrainingTitle(el.training_id)}</td>
 								<td>{findTeacher(el._id)}</td>
 								<td className="td-actions">
 									<Link to={`/group/${el._id}`} className="td-actions__link">
