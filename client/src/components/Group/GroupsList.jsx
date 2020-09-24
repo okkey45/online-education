@@ -9,6 +9,7 @@ export const GroupsList = () => {
 	const [teachers, setTeachers] = useState();
 	const [groups, setGroups] = useState();
 	const [usersGroups, setUsersGroups] = useState();
+	const [trainings, setTrainings] = useState();
 	const { token } = useContext(AuthContext);
 
 	const getUsers = useCallback(async () => {
@@ -52,7 +53,20 @@ export const GroupsList = () => {
 		getGroups();
 	}, [getGroups]);
 
-	if (loading || !groups || !usersGroups || !teachers) {
+	const getTrainings = useCallback(async () => {
+		try {
+			const data = await request('/api/training', 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setTrainings(data);
+		} catch (e) {}
+	}, [token, request]);
+
+	useEffect(() => {
+		getTrainings();
+	}, [getTrainings]);
+
+	if (loading || !groups || !usersGroups || !teachers || !trainings) {
 		return <Loader />;
 	}
 
@@ -63,6 +77,7 @@ export const GroupsList = () => {
 					groups={groups}
 					usersGroups={usersGroups}
 					teachers={teachers}
+					trainings={trainings}
 				/>
 			</div>
 		</div>
