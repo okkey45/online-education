@@ -1,6 +1,5 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useHistory } from 'react-router-dom';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
 import { Loader } from '../Loader/Loader';
@@ -9,7 +8,6 @@ import { Form, Button, Card } from 'react-bootstrap';
 
 export const Home = () => {
 	const { loading, request } = useHttp();
-	const history = useHistory();
 	const { token } = useContext(AuthContext);
 	const [trainings, setTrainings] = useState();
 	const getTrainings = useCallback(async () => {

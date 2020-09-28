@@ -1,26 +1,10 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
-import { AnswersStudent } from '../Answers/AnswersStudent.jsx';
+import { AnswerStudent } from '../Answers/AnswerStudent.jsx';
 
 export const SubjectDetail = ({ subject }) => {
-	const { loading, request } = useHttp();
-	const [users, setUsers] = useState([]);
-    const { token } = useContext(AuthContext);
-
-
-	const getUsers = useCallback(async () => {
-		try {
-			const data = await request('/api/user', 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-			setUsers(data);
-		} catch (e) {}
-	}, [token, request]);
-
-	useEffect(() => {
-		getUsers();
-    }, [getUsers]);
+	const { userRoles }  = useContext(AuthContext);
+	const userRol = userRoles.filter(rol => rol === 'student')
 
 	return (	
 		<div className="widget__wrapper has-shadow">
@@ -29,8 +13,9 @@ export const SubjectDetail = ({ subject }) => {
 			</div>
 			<div className="widget__body">
 				<div className="mb-3">{subject.context}</div>
-				<div>{ 
-						<AnswersStudent />
+				<div>{ 									
+					String(userRol) === 'student' &&
+						<AnswerStudent />
 					}
 				</div>
 			</div>
