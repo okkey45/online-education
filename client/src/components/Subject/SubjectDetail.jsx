@@ -13,10 +13,10 @@ export const SubjectDetail = ({ subject }) => {
 			</div>
 			<div className="widget__body">
 				<div className="mb-3">{subject.context}</div>
-				<div>{ 									
-					//  String(userRol) === 'student' &&
+				<div> 									
+				
 						<AnswerStudent />
-					}
+					
 				</div>
 			</div>
 		</div>

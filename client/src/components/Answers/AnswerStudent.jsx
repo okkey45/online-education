@@ -9,6 +9,7 @@ export const AnswerStudent = () => {
     const { request, loading } = useHttp();
     const { token }  = useContext(AuthContext);
     const [ answers, setAnswers ]  = useState();
+    const [ answer, setAnswer ]  = useState();
     const [form, setForm] = useState({
         subject_id: subjectId,
         stud_response: '',
@@ -34,9 +35,19 @@ export const AnswerStudent = () => {
 		} catch (e) {}
     };
 
+    const getAnswer = useCallback(async () => {
+		try {
+			const data = await request('/api/answers/${subjectId}', 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+            setAnswer(data);
+            console.log(data);
+		} catch (e) {}
+    }, [token, request]);
+    
     useEffect(() => {
-		setAnswers();
-    }, [setAnswers]);
+		getAnswer();
+    }, [getAnswer, subjectId]);
     
        return ( 
                 <>
@@ -67,6 +78,7 @@ export const AnswerStudent = () => {
                 }
                 {
                    answers && 
+                   
                     <div>
                         <p>Ответ:</p>
                         <p className="mt-3">{answers.answer.stud_response}</p>
