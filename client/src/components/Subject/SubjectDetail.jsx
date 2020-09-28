@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+// import { AuthContext } from '../../context/AuthContext';
 import { AnswerStudent } from '../Answers/AnswerStudent.jsx';
 
 export const SubjectDetail = ({ subject }) => {
-	const { userRoles }  = useContext(AuthContext);
-	const userRol = userRoles.filter(rol => rol === 'student')
+	//  const { userRoles }  = useContext(AuthContext);
+	//  const userRol = userRoles.filter(rol => rol === 'student')
 
 	return (	
 		<div className="widget__wrapper has-shadow">
@@ -14,7 +14,7 @@ export const SubjectDetail = ({ subject }) => {
 			<div className="widget__body">
 				<div className="mb-3">{subject.context}</div>
 				<div>{ 									
-					String(userRol) === 'student' &&
+					//  String(userRol) === 'student' &&
 						<AnswerStudent />
 					}
 				</div>
