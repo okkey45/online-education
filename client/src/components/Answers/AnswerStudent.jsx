@@ -9,7 +9,7 @@ export const AnswerStudent = () => {
     const { request, loading } = useHttp();
     const { token }  = useContext(AuthContext);
     const [ answers, setAnswers ]  = useState();
-    const [ answer, setAnswer ]  = useState();
+    const [ answerStud, setAnswerStud ]  = useState();
     const [form, setForm] = useState({
         subject_id: subjectId,
         stud_response: '',
@@ -22,7 +22,7 @@ export const AnswerStudent = () => {
     const changeHandler = (event) => {
        setForm({ ...form, [event.target.name]: event.target.value });
     };
-    
+console.log(answers);
     const sendAnswer = async (event) => {
 		try {
 			const data = await request(
@@ -37,18 +37,18 @@ export const AnswerStudent = () => {
 
     const getAnswer = useCallback(async () => {
 		try {
-			const data = await request('/api/answers/${subjectId}', 'GET', null, {
+        const data = await request(`/api/answers/${subjectId}`, 'GET', null, {
 				Authorization: `Bearer ${token}`,
-			});
-            setAnswer(data);
+            });
+            setAnswerStud(data);
             console.log(data);
 		} catch (e) {}
-    }, [token, request]);
+    }, [token, request, subjectId]);
     
     useEffect(() => {
 		getAnswer();
     }, [getAnswer, subjectId]);
-    
+    console.log(answerStud);
        return ( 
                 <>
                 { !answers && (String(userRol) === 'student') && 
@@ -76,13 +76,17 @@ export const AnswerStudent = () => {
                         </Form>
                     </div>
                 }
-                {
-                   answers && 
-                   
-                    <div>
-                        <p>Ответ:</p>
-                        <p className="mt-3">{answers.answer.stud_response}</p>
-                    </div>   
+                { 
+                answers && answerStud &&             
+                   answerStud.map((an, i) => {
+                    console.log(an)
+                    return (
+                        <div key={i}>
+                            <p>Ответ:</p>
+                            <p className="mt-3">{an.stud_response}</p>
+                        </div>  
+                         )
+                   })  
                 }
                 </>
             );

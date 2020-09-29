@@ -14,9 +14,7 @@ export const SubjectDetail = ({ subject }) => {
 			<div className="widget__body">
 				<div className="mb-3">{subject.context}</div>
 				<div> 									
-				
-						<AnswerStudent />
-					
+					<AnswerStudent />					
 				</div>
 			</div>
 		</div>
