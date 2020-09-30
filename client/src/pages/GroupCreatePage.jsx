@@ -6,8 +6,8 @@ export const GroupCreatePage = () => {
 	return (
 		<Layout
 			page={{
-				name: 'Добавить группу пользователей',
-				title: 'Добавить группу пользователей - Онлайн обучение',
+				name: 'Добавить группу',
+				title: 'Добавить группу - Онлайн обучение',
 			}}
 			content={<GroupCreate />}
 		/>

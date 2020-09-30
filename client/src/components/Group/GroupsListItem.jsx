@@ -2,19 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 // import { Loader } from '../Loader/Loader';
 
-export const GroupsListItem = ({
-	groups,
-	usersGroups,
-	teachers,
-	trainings,
-}) => {
-	const findTeacher = (groupId) => {
-		const group = usersGroups.find((el) => el.group_ids.includes(groupId));
-		const teacher = teachers.find((el) => el._id === group.user_id);
+export const GroupsListItem = ({ groups, teachers, trainings }) => {
+	const findTeacher = (teacherId) => {
+		const teacher = teachers.find((el) => el._id === teacherId);
 
 		return teacher.name;
 	};
-
 	const findTrainingTitle = (trainingId) => {
 		const training = trainings.find((el) => el._id === trainingId);
 
@@ -38,11 +31,18 @@ export const GroupsListItem = ({
 						return (
 							<tr key={i}>
 								<td className="text-nowrap">{el.character_code}</td>
-								<td title={el.description}>{el.name}</td>
+								<td>
+									<Link to={`/group/${el._id}`} title={el.description}>
+										{el.name}
+									</Link>
+								</td>
 								<td>{findTrainingTitle(el.training_id)}</td>
-								<td>{findTeacher(el._id)}</td>
+								<td>{findTeacher(el.teacher_id)}</td>
 								<td className="td-actions">
-									<Link to={`/group/${el._id}`} className="td-actions__link">
+									<Link
+										to={`/group/edit/${el._id}`}
+										className="td-actions__link"
+									>
 										<i className="la la-edit edit"></i>
 									</Link>
 									<a className="td-actions__link" href="/">
