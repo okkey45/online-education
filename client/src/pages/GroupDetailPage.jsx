@@ -6,16 +6,9 @@ import { Layout } from '../components/Layout/Layout';
 import { Loader } from '../components/Loader/Loader';
 import { GroupDetail } from '../components/Group/GroupDetail';
 
-import { Col } from 'react-bootstrap';
-
 export const GroupDetailPage = (props) => {
 	const groupId = useParams().id;
-	const [group, setGroup] = useState([]);
-	const [trainingId, setTrainingId] = useState();
-	const [training, setTraining] = useState([]);
-	const [teacherId, setTeacherId] = useState();
-	const [teacher, setTeacher] = useState([]);
-	const [users, setUsers] = useState();
+	const [group, setGroup] = useState();
 	const { loading, request } = useHttp();
 	const { token } = useContext(AuthContext);
 
@@ -26,8 +19,6 @@ export const GroupDetailPage = (props) => {
 				Authorization: `Bearer ${token}`,
 			});
 			setGroup(data);
-			setTrainingId(data.training_id);
-			setTeacherId(data.teacher_id);
 		} catch (e) {}
 	}, [token, request, groupId]);
 
@@ -35,52 +26,7 @@ export const GroupDetailPage = (props) => {
 		getGroup();
 	}, [getGroup, groupId]);
 
-	const getTraining = useCallback(async () => {
-		if (!trainingId) return;
-		try {
-			const data = await request(`/api/training/${trainingId}`, 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-			setTraining(data);
-		} catch (e) {}
-	}, [token, request, trainingId]);
-
-	useEffect(() => {
-		getTraining();
-	}, [getTraining, trainingId]);
-
-	const getTeacher = useCallback(async () => {
-		if (!teacherId) return;
-		try {
-			const data = await request(`/api/user/${teacherId}`, 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-			setTeacher(data);
-		} catch (e) {}
-	}, [token, request, teacherId]);
-
-	useEffect(() => {
-		getTeacher();
-	}, [getTeacher, teacherId]);
-
-	const getUsers = useCallback(async () => {
-		try {
-			const data = await request(`/api/user`, 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-
-			const filteredUser = data.filter((user) => {
-				if (group.students_ids.find((st) => st === user._id)) return user;
-			});
-			setUsers(filteredUser);
-		} catch (e) {}
-	}, [token, request, group]);
-
-	useEffect(() => {
-		getUsers();
-	}, [getUsers, group]);
-
-	if (loading || !group || !training || !teacher || !users) {
+	if (loading || !group) {
 		return <Loader />;
 	}
 
@@ -90,9 +36,7 @@ export const GroupDetailPage = (props) => {
 				name: String(`Группа: ${group.name}`),
 				title: `${group.name} - Education Online`,
 			}}
-			content={
-				<GroupDetail training={training} teacher={teacher} users={users} />
-			}
+			content={<GroupDetail group={group} />}
 		/>
 	);
 };
