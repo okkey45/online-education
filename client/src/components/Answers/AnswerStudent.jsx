@@ -3,26 +3,34 @@ import { AuthContext } from '../../context/AuthContext';
 import { useHttp } from '../../hooks/http.hook';
 import { useParams } from 'react-router-dom';
 
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Col } from 'react-bootstrap';
 export const AnswerStudent = () => {
     const subjectId = useParams().id;
     const { request, loading } = useHttp();
     const { token }  = useContext(AuthContext);
-    const [ answers, setAnswers ]  = useState();
-    const [ answerStud, setAnswerStud ]  = useState();
+    const [ answerTeacher, setAnswerTeacher ]  = useState([]);
+    const [ answerStud, setAnswerStud ]  = useState([]);
     const [form, setForm] = useState({
         subject_id: subjectId,
         stud_response: '',
         creation_date: Date.now(),
     });
+    const [formTeach, setFormTeach] = useState({
+        prof_response: '',
+        score: '',
+        date_of_change: Date.now(),
+    });
     const { userRoles }  = useContext(AuthContext);
 
-	const userRol = userRoles.filter(rol => rol === 'student')
+    const userRolStudent = userRoles.filter(rol => rol === 'student')
+    const userRolTeacher = userRoles.filter(rol => rol === 'teacher')
 
     const changeHandler = (event) => {
        setForm({ ...form, [event.target.name]: event.target.value });
     };
-console.log(answers);
+    const changeHandlerTeach = (event) => {
+        setFormTeach({ ...formTeach, [event.target.name]: event.target.value });
+     };
     const sendAnswer = async (event) => {
 		try {
 			const data = await request(
@@ -31,11 +39,23 @@ console.log(answers);
                 { ...form },
                 { Authorization: `Bearer ${token}` },
             );
-            setAnswers(data);    
+            setAnswerStud(data);  
 		} catch (e) {}
     };
-
-    const getAnswer = useCallback(async () => {
+    const sendAnswerTeacher = async (event) => {
+		try {
+			const data = await request(
+				`/api/answers/create`,
+				'POST',
+                { ...formTeach },
+                { Authorization: `Bearer ${token}` },
+            );
+            setAnswerTeacher(data);
+            console.log(data);  
+console.log(data);
+		} catch (e) {}
+    };
+    const getAnswers = useCallback(async () => {
 		try {
         const data = await request(`/api/answers/${subjectId}`, 'GET', null, {
 				Authorization: `Bearer ${token}`,
@@ -46,14 +66,16 @@ console.log(answers);
     }, [token, request, subjectId]);
     
     useEffect(() => {
-		getAnswer();
-    }, [getAnswer, subjectId]);
-    console.log(answerStud);
+		getAnswers();
+    }, [getAnswers, subjectId]);
+
        return ( 
                 <>
-                { !answers && (String(userRol) === 'student') && 
+                { (String(userRolStudent) === 'student') && 
                     <div>
-                        <Form className="form__createTraining mb-3">
+                        {
+                        answerStud.length <= 0 &&
+                            <Form className="form__createTraining mb-3">
                             <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
                                 <Form.Label>Ответ студента:</Form.Label>
                                 <Form.Control
@@ -63,7 +85,6 @@ console.log(answers);
                                 name="stud_response"
                                 value={form.stud_response}
                                 onChange={changeHandler}
-                        
                                 />
                             </Form.Group>
                             <Button
@@ -73,21 +94,60 @@ console.log(answers);
                             >
                                 Отправить
                             </Button>
-                        </Form>
+                        </Form>                       
+                        }
+                        {   
+                            answerStud.length > 0 &&        
+                            answerStud.map((an, i) => {
+                            return (
+                                <div key={i}>
+                                    <p>Ответ:</p>
+                                    <p className="mt-3">{an.stud_response}</p>
+                                </div>  
+                                )
+                            })  
+                        }
                     </div>
                 }
-                { 
-                answers && answerStud &&             
-                   answerStud.map((an, i) => {
-                    console.log(an)
-                    return (
-                        <div key={i}>
-                            <p>Ответ:</p>
-                            <p className="mt-3">{an.stud_response}</p>
-                        </div>  
-                         )
-                   })  
-                }
+                {
+                  (String(userRolTeacher) === 'teacher') && 
+                  <div>
+                      {
+                          answerStud.length > 0 &&        
+                          answerStud.map((an, i) => {
+        
+                          return (
+                              <div key={i}>
+                                  <p>Ответ студента:</p>
+                                  <p className="mt-3">{an.stud_response}</p>
+                              </div> 
+                              )
+                          })
+                      }
+                      {                         
+                    <Form className="form__createTraining mb-3">
+                         <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
+                             <Form.Label>Комментарий учителя:</Form.Label>
+                             <Form.Control
+                             as="textarea"
+                             rows="3" 
+                             className="textarea-answer"
+                             name="prof_response"
+                             value={formTeach.prof_response}
+                             onChange={changeHandlerTeach}
+                             />
+                         </Form.Group>
+                         <Button
+                         type="submit"
+                         onClick={sendAnswerTeacher}
+                         disabled={loading}
+                         >
+                             Отправить
+                         </Button>
+                     </Form>                    
+                      }
+                  </div>
+                }  
                 </>
             );
            
