@@ -2,15 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { SubjectList } from '../Subject/SubjectList';
 
-export const GroupDetail = ({ training, teacher, users }) => {
+export const GroupDetail = ({ training, group }) => {
 	return (
 		<>
 			<div className="widget__wrapper has-shadow">
 				<div className="widget__header">
-					<h3 className="widget__title">{training.title}</h3>
+					<h3 className="widget__title">{group.training_id.title}</h3>
 				</div>
 				<div className="widget__body">
-					<h4 className="mb-3">Преподаватель: {teacher.name}</h4>
+					<h4 className="mb-3">Преподаватель: {group.teacher_id.name}</h4>
 					<p>Наставники:</p>
 					<ul>
 						<li className="mb-3">
@@ -25,7 +25,10 @@ export const GroupDetail = ({ training, teacher, users }) => {
 					</ul>
 				</div>
 			</div>
-			<SubjectList trainingId={training._id} trainingTitle={training.title} />
+			<SubjectList
+				trainingId={group.training_id._id}
+				trainingTitle={group.training_id.title}
+			/>
 			<div className="widget__wrapper has-shadow">
 				<div className="widget__header">
 					<h4 className="widget__title">Студенты</h4>
@@ -41,7 +44,7 @@ export const GroupDetail = ({ training, teacher, users }) => {
 								</tr>
 							</thead>
 							<tbody>
-								{users.map((user) => {
+								{group.students_ids.map((user) => {
 									return (
 										<tr key={user._id}>
 											<td>{user.name}</td>

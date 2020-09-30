@@ -9,7 +9,7 @@ import { Form, Button } from 'react-bootstrap';
 
 export const GroupEdit = (props) => {
 	const groupId = useParams().id;
-	const [group, setGroup] = useState([]);
+	const [group, setGroup] = useState();
 	const [trainingId, setTrainingId] = useState();
 	const [training, setTraining] = useState([]);
 	const [teacherId, setTeacherId] = useState();
@@ -32,9 +32,14 @@ export const GroupEdit = (props) => {
 				Authorization: `Bearer ${token}`,
 			});
 			setGroup(data);
-			setForm(data);
-			setTrainingId(data.training_id);
-			setTeacherId(data.teacher_id);
+			setForm({
+				name: data.name._id,
+				description: data.description._id,
+				training_id: data.training_id._id,
+				teacher_id: data.teacher_id._id,
+			});
+			/* setTrainingId(data.training_id);
+			setTeacherId(data.teacher_id); */
 		} catch (e) {}
 	}, [token, request, groupId]);
 
@@ -102,7 +107,7 @@ export const GroupEdit = (props) => {
 		} catch (e) {}
 	};
 
-	if (loading || !group || !training || !users) {
+	if (loading || !group) {
 		return <Loader />;
 	}
 
@@ -111,7 +116,7 @@ export const GroupEdit = (props) => {
 			<div className="widget__wrapper has-shadow">
 				<div className="widget__header">
 					<h4 className="widget__title">
-						Группа: {group.name} | {training.title}
+						Группа: {group.name} | {group.training_id.title}
 					</h4>
 				</div>
 				<div className="widget__body">
@@ -176,7 +181,7 @@ export const GroupEdit = (props) => {
 					<h4 className="widget__title">Расписание занятий</h4>
 				</div>
 				<div className="widget__body">
-					{trainingId && <GroupTimetable trainingId={trainingId} />}
+					{/* {trainingId && <GroupTimetable trainingId={trainingId} />} */}
 				</div>
 			</div>
 		</>
