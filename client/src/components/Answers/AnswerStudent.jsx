@@ -9,7 +9,7 @@ export const AnswerStudent = () => {
     const { request, loading } = useHttp();
     const { token }  = useContext(AuthContext);
     const [ answerTeacher, setAnswerTeacher ]  = useState([]);
-    const [ answerStud, setAnswerStud ]  = useState([]);
+    const [ answerStud, setAnswerStud ]  = useState();
     const [form, setForm] = useState({
         subject_id: subjectId,
         stud_response: '',
@@ -74,7 +74,7 @@ console.log(data);
                 { (String(userRolStudent) === 'student') && 
                     <div>
                         {
-                        answerStud.length <= 0 &&
+                        !answerStud &&
                             <Form className="form__createTraining mb-3">
                             <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
                                 <Form.Label>Ответ студента:</Form.Label>
@@ -97,7 +97,7 @@ console.log(data);
                         </Form>                       
                         }
                         {   
-                            answerStud.length > 0 &&        
+                            answerStud &&        
                             answerStud.map((an, i) => {
                             return (
                                 <div key={i}>
