@@ -1,19 +1,22 @@
-import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
-import { Loader } from '../Loader/Loader';
+import { useParams } from 'react-router-dom';
 import { GroupTimetable } from './GroupTimetable';
+import { Loader } from '../Loader/Loader';
 
 import { Form, Button } from 'react-bootstrap';
 
-export const GroupCreate = () => {
-	const { loading, request } = useHttp();
-	const history = useHistory();
-	const { token } = useContext(AuthContext);
-	const [trainings, setTrainings] = useState();
-	//const [subjects, setSubjects] = useState();
+export const GroupEdit = (props) => {
+	const groupId = useParams().id;
+	const [group, setGroup] = useState([]);
+	const [trainingId, setTrainingId] = useState();
+	const [training, setTraining] = useState([]);
+	const [teacherId, setTeacherId] = useState();
+	const [teacher, setTeacher] = useState([]);
 	const [users, setUsers] = useState();
+	const { loading, request } = useHttp();
+	const { token } = useContext(AuthContext);
 	const [form, setForm] = useState({
 		name: '',
 		description: '',
@@ -21,6 +24,51 @@ export const GroupCreate = () => {
 		teacher_id: '',
 		students_ids: '',
 	});
+
+	const getGroup = useCallback(async () => {
+		if (!groupId) return;
+		try {
+			const data = await request(`/api/group/${groupId}`, 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setGroup(data);
+			setForm(data);
+			setTrainingId(data.training_id);
+			setTeacherId(data.teacher_id);
+		} catch (e) {}
+	}, [token, request, groupId]);
+
+	useEffect(() => {
+		getGroup();
+	}, [getGroup, groupId]);
+
+	const getTraining = useCallback(async () => {
+		if (!trainingId) return;
+		try {
+			const data = await request(`/api/training/${trainingId}`, 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setTraining(data);
+		} catch (e) {}
+	}, [token, request, trainingId]);
+
+	useEffect(() => {
+		getTraining();
+	}, [getTraining, trainingId]);
+
+	const getTeacher = useCallback(async () => {
+		if (!teacherId) return;
+		try {
+			const data = await request(`/api/user/${teacherId}`, 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setTeacher(data);
+		} catch (e) {}
+	}, [token, request, teacherId]);
+
+	useEffect(() => {
+		getTeacher();
+	}, [getTeacher, teacherId]);
 
 	const getUsers = useCallback(async () => {
 		try {
@@ -35,44 +83,26 @@ export const GroupCreate = () => {
 		getUsers();
 	}, [getUsers]);
 
-	const getTrainings = useCallback(async () => {
-		try {
-			const data = await request('/api/training', 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-			setTrainings(data);
-		} catch (e) {}
-	}, [token, request]);
-
-	useEffect(() => {
-		getTrainings();
-	}, [getTrainings]);
-
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
+		setTeacher(form.teacher);
 	};
 
 	const saveHandler = async (event) => {
 		event.preventDefault();
 
 		try {
-			const data = await request(
+			/* const data = await request(
 				'/api/group/create',
 				'POST',
-				{
-					name: form.name,
-					description: form.description,
-					training_id: form.training_id,
-					teacher_id: form.teacher_id,
-				},
+				{ ...form },
 				{ Authorization: `Bearer ${token}` },
-			);
-
-			if (data) history.push(`/group/${data._id}`);
+			); */
+			//if (data) history.push(`/group/${data._id}`);
 		} catch (e) {}
 	};
 
-	if (loading || !trainings || !users) {
+	if (loading || !group || !training || !users) {
 		return <Loader />;
 	}
 
@@ -80,29 +110,12 @@ export const GroupCreate = () => {
 		<>
 			<div className="widget__wrapper has-shadow">
 				<div className="widget__header">
-					<h4 className="widget__title">Создать группу</h4>
+					<h4 className="widget__title">
+						Группа: {group.name} | {training.title}
+					</h4>
 				</div>
 				<div className="widget__body">
-					<Form className="form__createGroup">
-						<Form.Group controlId="inputSetGroup" className="mb-3">
-							<Form.Label>Тренинг</Form.Label>
-							<Form.Control
-								as="select"
-								name="training_id"
-								value={form.training_id}
-								onChange={changeHandler}
-							>
-								<option value="">Выберите тренинг</option>
-								{trainings.length &&
-									trainings.map((el, i) => {
-										return (
-											<option key={i} value={el._id}>
-												{el.title}
-											</option>
-										);
-									})}
-							</Form.Control>
-						</Form.Group>
+					<Form className="form__editGroup">
 						<Form.Group controlId="inputSetTeacher" className="mb-3">
 							<Form.Label>Преподаватель</Form.Label>
 							<Form.Control
@@ -163,7 +176,7 @@ export const GroupCreate = () => {
 					<h4 className="widget__title">Расписание занятий</h4>
 				</div>
 				<div className="widget__body">
-					{form.training_id && <GroupTimetable trainingId={form.training_id} />}
+					{trainingId && <GroupTimetable trainingId={trainingId} />}
 				</div>
 			</div>
 		</>
