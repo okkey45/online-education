@@ -17,11 +17,11 @@ export const AnswerStudent = () => {
         stud_response: '',
         creation_date: Date.now(),
     });
-    const [formTeach, setFormTeach] = useState({
-        prof_response: '',
-        score: '',
-        date_of_change: Date.now(),
-    });
+    // const [formTeach, setFormTeach] = useState({
+    //     prof_response: '',
+    //     score: '',
+    //     date_of_change: Date.now(),
+    // });
     
 
     const userRolStudent = userRoles.filter(rol => rol === 'student')
@@ -30,9 +30,9 @@ export const AnswerStudent = () => {
     const changeHandler = (event) => {
        setForm({ ...form, [event.target.name]: event.target.value });
     };
-    const changeHandlerTeach = (event) => {
-        setFormTeach({ ...formTeach, [event.target.name]: event.target.value });
-     };
+    // const changeHandlerTeach = (event) => {
+    //     setFormTeach({ ...formTeach, [event.target.name]: event.target.value });
+    //  };
     const sendAnswer = async (event) => {
 
     try {
