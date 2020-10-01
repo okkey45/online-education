@@ -9,7 +9,7 @@ export const AnswerStudent = () => {
     const subjectId = useParams().id;
     const history = useHistory();
     const { request, loading } = useHttp();
-    const { token }  = useContext(AuthContext);
+    const { token, userRoles, userId }  = useContext(AuthContext);
     const [ answerTeacher, setAnswerTeacher ]  = useState([]);
     const [ answerStud, setAnswerStud ]  = useState([]);
     const [form, setForm] = useState({
@@ -22,7 +22,7 @@ export const AnswerStudent = () => {
         score: '',
         date_of_change: Date.now(),
     });
-    const { userRoles }  = useContext(AuthContext);
+    
 
     const userRolStudent = userRoles.filter(rol => rol === 'student')
     const userRolTeacher = userRoles.filter(rol => rol === 'teacher')
@@ -42,8 +42,10 @@ export const AnswerStudent = () => {
                 { ...form },
                 { Authorization: `Bearer ${token}` },
             );
-            history.push(`/subject/${subjectId}`);
-            console.log('set', data); 
+            setAnswerStud(data)
+            // history.push(`/subject/${subjectId}`);
+            console.log(data);
+        
 		} catch (e) {}
     };
 //     const sendAnswerTeacher = async (event) => {
@@ -66,19 +68,33 @@ export const AnswerStudent = () => {
 				Authorization: `Bearer ${token}`,
             });
             setAnswerStud(data)
+            console.log(data);
 		} catch (e) {}
     }, [token, request, subjectId]);
         
     useEffect(() => {
 		getAnswers();
     }, [getAnswers, subjectId]);
+    const answerMap = () => {
+    if (answerStud.length > 0) {
+        const author = answerStud.map(aut => aut.author_id)
+        const author2 = author.filter(a => a == userId)
+        const author3 = String(author2[0])
+    return author3
+    }}
+    const answerFilter = () => {
+        if (answerStud.length > 0) { 
+            const ans = answerStud.filter(a => a.author_id == userId)
+            return ans
+    }}
+    console.log(answerFilter(answerStud));
 
        return ( 
                 <>
                 { (String(userRolStudent) === 'student') && 
                     <div>
                         {
-                        answerStud.length < 1 &&
+                        (answerStud.length < 1 || answerMap(answerStud) !== userId)  && 
                             <Form className="form__createTraining mb-3">
                             <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
                                 <Form.Label>Ответ студента:</Form.Label>
@@ -101,8 +117,10 @@ export const AnswerStudent = () => {
                         </Form>                       
                         }
                         {   
-                            answerStud.length > 0 &&        
-                            answerStud.map((an, i) => {
+                            (answerStud.length > 0 &&  answerMap(answerStud) === userId) &&
+                               
+                            answerFilter(answerStud).map((an, i) => {
+                               
                             return (
                                 <div key={i}>
                                     <p className="mb-3">Ответ:</p>
@@ -114,43 +132,43 @@ export const AnswerStudent = () => {
                     </div>
                 }
                 {
-                  (String(userRolTeacher) === 'teacher') && 
-                  <div>
-                      {/* {
-                          answerStud.length > 0  &&        
-                          answerStud.map((an, i) => {
+                 // (String(userRolTeacher) === 'teacher') && 
+                //   <div>
+                //       {
+                //           answerStud.length > 0  &&        
+                //           answerStud.map((an, i) => {
         
-                          return (
-                              <div key={i}>
-                                  <p>Ответ студента:</p>
-                                  <p className="mt-3">{an.stud_response}</p>
-                              </div> 
-                              )
-                          })
-                      } */}
-                      {                         
-                    // <Form className="form__createTraining mb-3">
-                    //      <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
-                    //          <Form.Label>Комментарий учителя:</Form.Label>
-                    //          <Form.Control
-                    //          as="textarea"
-                    //          rows="3" 
-                    //          className="textarea-answer"
-                    //          name="prof_response"
-                    //          value={formTeach.prof_response}
-                    //          onChange={changeHandlerTeach}
-                    //          />
-                    //      </Form.Group>
-                    //      <Button
-                    //      type="submit"
-                    //      onClick={sendAnswerTeacher}
-                    //      disabled={loading}
-                    //      >
-                    //          Отправить
-                    //      </Button>
-                    //  </Form>                    
-                      }
-                  </div>
+                //           return (
+                //               <div key={i}>
+                //                   <p>Ответ студента:</p>
+                //                   <p className="mt-3">{an.stud_response}</p>
+                //               </div> 
+                //               )
+                //           })
+                //       }
+                //       {                         
+                //     <Form className="form__createTraining mb-3">
+                //          <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
+                //              <Form.Label>Комментарий учителя:</Form.Label>
+                //              <Form.Control
+                //              as="textarea"
+                //              rows="3" 
+                //              className="textarea-answer"
+                //              name="prof_response"
+                //              value={formTeach.prof_response}
+                //              onChange={changeHandlerTeach}
+                //              />
+                //          </Form.Group>
+                //          <Button
+                //          type="submit"
+                //          onClick={sendAnswerTeacher}
+                //          disabled={loading}
+                //          >
+                //              Отправить
+                //          </Button>
+                //      </Form>                    
+                //       }
+                //   </div>
                 }  
                 </>
             );
