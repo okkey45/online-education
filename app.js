@@ -14,6 +14,7 @@ app.use('/api/user_groups', require('./routes/user_groups.routes'));
 app.use('/api/training', require('./routes/training.routes'));
 app.use('/api/subject', require('./routes/subject.routes'));
 app.use('/api/answers', require('./routes/answers.routes'));
+app.use('/api/timetable_groups', require('./routes/timetable_groups.routes'));
 
 if (process.env.NODE_ENV === 'production') {
 	app.use('/', express.static(path.join(__dirname, 'client', 'build')));
