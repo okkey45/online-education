@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
-import { useParams } from 'react-router-dom';
 import { GroupTimetable } from './GroupTimetable';
 import { Loader } from '../Loader/Loader';
 
@@ -10,10 +10,6 @@ import { Form, Button } from 'react-bootstrap';
 export const GroupEdit = (props) => {
 	const groupId = useParams().id;
 	const [group, setGroup] = useState();
-	const [trainingId, setTrainingId] = useState();
-	const [training, setTraining] = useState([]);
-	const [teacherId, setTeacherId] = useState();
-	const [teacher, setTeacher] = useState([]);
 	const [users, setUsers] = useState();
 	const { loading, request } = useHttp();
 	const { token } = useContext(AuthContext);
@@ -33,47 +29,17 @@ export const GroupEdit = (props) => {
 			});
 			setGroup(data);
 			setForm({
-				name: data.name._id,
-				description: data.description._id,
+				name: data.name,
+				description: data.description,
 				training_id: data.training_id._id,
 				teacher_id: data.teacher_id._id,
 			});
-			/* setTrainingId(data.training_id);
-			setTeacherId(data.teacher_id); */
 		} catch (e) {}
 	}, [token, request, groupId]);
 
 	useEffect(() => {
 		getGroup();
 	}, [getGroup, groupId]);
-
-	const getTraining = useCallback(async () => {
-		if (!trainingId) return;
-		try {
-			const data = await request(`/api/training/${trainingId}`, 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-			setTraining(data);
-		} catch (e) {}
-	}, [token, request, trainingId]);
-
-	useEffect(() => {
-		getTraining();
-	}, [getTraining, trainingId]);
-
-	const getTeacher = useCallback(async () => {
-		if (!teacherId) return;
-		try {
-			const data = await request(`/api/user/${teacherId}`, 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-			setTeacher(data);
-		} catch (e) {}
-	}, [token, request, teacherId]);
-
-	useEffect(() => {
-		getTeacher();
-	}, [getTeacher, teacherId]);
 
 	const getUsers = useCallback(async () => {
 		try {
@@ -90,7 +56,6 @@ export const GroupEdit = (props) => {
 
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
-		setTeacher(form.teacher);
 	};
 
 	const saveHandler = async (event) => {
@@ -107,7 +72,7 @@ export const GroupEdit = (props) => {
 		} catch (e) {}
 	};
 
-	if (loading || !group) {
+	if (loading || !group || !users) {
 		return <Loader />;
 	}
 
@@ -182,6 +147,50 @@ export const GroupEdit = (props) => {
 				</div>
 				<div className="widget__body">
 					{/* {trainingId && <GroupTimetable trainingId={trainingId} />} */}
+				</div>
+			</div>
+			<div className="widget__wrapper has-shadow">
+				<div className="widget__header">
+					<h4 className="widget__title">Студенты</h4>
+				</div>
+				<div className="widget__body">
+					<div className="table-responsive">
+						<table className="table table-hover mb-0">
+							<thead>
+								<tr>
+									<th>Имя</th>
+									<th>Email</th>
+									<th>Действия</th>
+								</tr>
+							</thead>
+							<tbody>
+								{group.students_ids.map((user) => {
+									return (
+										<tr key={user._id}>
+											<td>{user.name}</td>
+											<td>{user.email}</td>
+											<td className="td-actions">
+												<Link
+													to={`/user/edit/${user._id}`}
+													className="td-actions__link"
+													title="Редактировать"
+												>
+													<i className="la la-edit edit"></i>
+												</Link>
+												<span
+													className="td-actions__link"
+													title="Удалить"
+													data-id={user._id}
+												>
+													<i className="la la-close delete"></i>
+												</span>
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</>
