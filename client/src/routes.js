@@ -4,6 +4,8 @@ import { AuthPage } from './pages/AuthPage';
 import { HomePage } from './pages/HomePage';
 import { GroupsPage } from './pages/GroupsPage';
 import { GroupCreatePage } from './pages/GroupCreatePage';
+import { GroupEditPage } from './pages/GroupEditPage';
+import { GroupDetailPage } from './pages/GroupDetailPage';
 import { UsersPage } from './pages/UsersPage';
 import { UserCreatePage } from './pages/UserCreatePage';
 import { UserEditPage } from './pages/UserEditPage';
@@ -12,6 +14,7 @@ import { TrainingCreatePage } from './pages/TrainingCreatePage';
 import { TrainingDetailPage } from './pages/TrainingDetailPage';
 import { SubjectCreatePage } from './pages/SubjectCreatePage';
 import { SubjectEditPage } from './pages/SubjectEditPage';
+import { SubjectDetailPage } from './pages/SubjectDetailPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { DevelopersPage } from './pages/DevelopersPage';
 
@@ -27,6 +30,12 @@ export const useRoutes = (isAuthenticated) => {
 				</Route>
 				<Route path="/group/create" exact>
 					<GroupCreatePage />
+				</Route>
+				<Route path="/group/edit/:id">
+					<GroupEditPage />
+				</Route>
+				<Route path="/group/:id">
+					<GroupDetailPage />
 				</Route>
 				<Route path="/users" exact>
 					<UsersPage />
@@ -51,6 +60,9 @@ export const useRoutes = (isAuthenticated) => {
 				</Route>
 				<Route path="/subject/edit/:id">
 					<SubjectEditPage />
+				</Route>
+				<Route path="/subject/:id">
+					<SubjectDetailPage />
 				</Route>
 				<Route path="/profile" exact>
 					<ProfilePage />

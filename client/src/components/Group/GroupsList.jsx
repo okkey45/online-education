@@ -8,7 +8,7 @@ export const GroupsList = () => {
 	const { loading, request } = useHttp();
 	const [teachers, setTeachers] = useState();
 	const [groups, setGroups] = useState();
-	const [usersGroups, setUsersGroups] = useState();
+	const [trainings, setTrainings] = useState();
 	const { token } = useContext(AuthContext);
 
 	const getUsers = useCallback(async () => {
@@ -26,19 +26,6 @@ export const GroupsList = () => {
 		getUsers();
 	}, [getUsers]);
 
-	const getUsersGroups = useCallback(async () => {
-		try {
-			const data = await request(`/api/user_groups`, 'GET', null, {
-				Authorization: `Bearer ${token}`,
-			});
-			setUsersGroups(data);
-		} catch (e) {}
-	}, [token, request]);
-
-	useEffect(() => {
-		getUsersGroups();
-	}, [getUsersGroups]);
-
 	const getGroups = useCallback(async () => {
 		try {
 			const data = await request('/api/group', 'GET', null, {
@@ -52,7 +39,20 @@ export const GroupsList = () => {
 		getGroups();
 	}, [getGroups]);
 
-	if (loading || !groups || !usersGroups || !teachers) {
+	const getTrainings = useCallback(async () => {
+		try {
+			const data = await request('/api/training', 'GET', null, {
+				Authorization: `Bearer ${token}`,
+			});
+			setTrainings(data);
+		} catch (e) {}
+	}, [token, request]);
+
+	useEffect(() => {
+		getTrainings();
+	}, [getTrainings]);
+
+	if (loading || !groups || !teachers || !trainings) {
 		return <Loader />;
 	}
 
@@ -61,8 +61,8 @@ export const GroupsList = () => {
 			<div className="widget__body">
 				<GroupsListItem
 					groups={groups}
-					usersGroups={usersGroups}
 					teachers={teachers}
+					trainings={trainings}
 				/>
 			</div>
 		</div>

@@ -37,14 +37,6 @@ export const Login = () => {
 							Etiam consequat urna at magna bibendum, in tempor arcu fermentum
 							vitae mi massa egestas.
 						</span>
-						<span className="h3 pt-5" style={{ color: '#fff' }}>
-							Данные для авторизации в приложении
-						</span>
-						<span className="h4 pt-3" style={{ color: '#fff' }}>
-							Автор:
-						</span>
-						<span>Email: v@mail.ru</span>
-						<span>Password: 123456</span>
 					</div>
 				</Col>
 				<Col md={7} lg={6} xl={4} className="col-right">
