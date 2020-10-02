@@ -146,7 +146,10 @@ export const GroupEdit = (props) => {
 					<h4 className="widget__title">Расписание занятий</h4>
 				</div>
 				<div className="widget__body">
-					{/* {trainingId && <GroupTimetable trainingId={trainingId} />} */}
+					<GroupTimetable
+						groupId={group._id}
+						timetableId={group.timetable_id}
+					/>
 				</div>
 			</div>
 			<div className="widget__wrapper has-shadow">
