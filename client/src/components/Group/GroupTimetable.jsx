@@ -1,6 +1,7 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
-import { useHttp } from '../../hooks/http.hook';
+import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { useHttp } from '../../hooks/http.hook';
 import { Loader } from '../Loader/Loader';
 
 import { Form, Button } from 'react-bootstrap';
@@ -8,8 +9,10 @@ import { Form, Button } from 'react-bootstrap';
 export const GroupTimetable = ({ groupId, timetableId }) => {
 	const { loading, request } = useHttp();
 	const { token } = useContext(AuthContext);
+	const history = useHistory();
 	const [timetableGroup, setTimetableGroup] = useState();
 	const [timetableForm, setTimetableForm] = useState([]);
+	const locPathname = history.location.pathname;
 
 	const getTimeTableGroup = useCallback(async () => {
 		if (!timetableId) return;
@@ -65,7 +68,9 @@ export const GroupTimetable = ({ groupId, timetableId }) => {
 		console.log(timetableArr);
 	};
 
-	if (loading || !timetableGroup) return <Loader />;
+	if (loading) return <Loader />;
+
+	if (!loading && !timetableGroup) return <p>У группы нет расписания.</p>;
 
 	return (
 		<div className="table-responsive">
@@ -74,7 +79,7 @@ export const GroupTimetable = ({ groupId, timetableId }) => {
 					<tr>
 						<th>Дата</th>
 						<th>Тема</th>
-						<th>Изменить дату</th>
+						{locPathname.includes('edit') && <th>Изменить дату</th>}
 					</tr>
 				</thead>
 				<tbody>
@@ -83,29 +88,33 @@ export const GroupTimetable = ({ groupId, timetableId }) => {
 							<tr key={i}>
 								<td>{new Date(el.start_date).toLocaleDateString()}</td>
 								<td>{el.subject_id.title}</td>
-								<td className="text-nowrap">
-									<Form.Group controlId={`inputDate_${el.subject_id._id}`}>
-										<Form.Control
-											type="date"
-											name={el.subject_id._id}
-											value={timetableForm.start_date}
-											onChange={changeHandler}
-										/>
-									</Form.Group>
-								</td>
+								{locPathname.includes('edit') && (
+									<td className="text-nowrap">
+										<Form.Group controlId={`inputDate_${el.subject_id._id}`}>
+											<Form.Control
+												type="date"
+												name={el.subject_id._id}
+												value={timetableForm.start_date}
+												onChange={changeHandler}
+											/>
+										</Form.Group>
+									</td>
+								)}
 							</tr>
 						);
 					})}
 				</tbody>
 			</table>
-			<Button
-				className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
-				type="submit"
-				onClick={saveHandler}
-				disabled={loading}
-			>
-				Сохранить расписание
-			</Button>
+			{locPathname.includes('edit') && (
+				<Button
+					className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
+					type="submit"
+					onClick={saveHandler}
+					disabled={loading}
+				>
+					Сохранить расписание
+				</Button>
+			)}
 		</div>
 	);
 };
