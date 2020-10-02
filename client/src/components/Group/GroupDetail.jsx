@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { SubjectList } from '../Subject/SubjectList';
+import { GroupTimetable } from './GroupTimetable';
 
 export const GroupDetail = ({ group }) => {
 	return (
@@ -25,10 +25,17 @@ export const GroupDetail = ({ group }) => {
 					</ul>
 				</div>
 			</div>
-			<SubjectList
-				trainingId={group.training_id._id}
-				trainingTitle={group.training_id.title}
-			/>
+			<div className="widget__wrapper has-shadow">
+				<div className="widget__header">
+					<h4 className="widget__title">Расписание занятий</h4>
+				</div>
+				<div className="widget__body">
+					<GroupTimetable
+						groupId={group._id}
+						timetableId={group.timetable_id}
+					/>
+				</div>
+			</div>
 			<div className="widget__wrapper has-shadow">
 				<div className="widget__header">
 					<h4 className="widget__title">Студенты</h4>
