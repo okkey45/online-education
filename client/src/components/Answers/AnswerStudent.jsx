@@ -25,7 +25,7 @@ export const AnswerStudent = () => {
     
 
     const userRolStudent = userRoles.filter(rol => rol === 'student')
-    const userRolTeacher = userRoles.filter(rol => rol === 'teacher')
+   // const userRolTeacher = userRoles.filter(rol => rol === 'teacher')
 
     const changeHandler = (event) => {
        setForm({ ...form, [event.target.name]: event.target.value });
@@ -44,8 +44,6 @@ export const AnswerStudent = () => {
             );
             setAnswerStud(data)
             // history.push(`/subject/${subjectId}`);
-            console.log(data);
-        
 		} catch (e) {}
     };
 //     const sendAnswerTeacher = async (event) => {
@@ -62,7 +60,6 @@ export const AnswerStudent = () => {
 // 		} catch (e) {}
 //     };
     const getAnswers = useCallback(async () => {
-        // if (answerStud) return;
 		try {
         const data = await request(`/api/answers/${subjectId}`, 'GET', null, {
 				Authorization: `Bearer ${token}`,
@@ -93,9 +90,9 @@ export const AnswerStudent = () => {
                 <>
                 { (String(userRolStudent) === 'student') && 
                     <div>
-                        {
+                        { 
                         (answerStud.length < 1 || answerMap(answerStud) !== userId)  && 
-                            <Form className="form__createTraining mb-3">
+                            <Form className="form__createTraining mb-3" onSubmit={sendAnswer}>
                             <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
                                 <Form.Label>Ответ студента:</Form.Label>
                                 <Form.Control
@@ -109,16 +106,16 @@ export const AnswerStudent = () => {
                             </Form.Group>
                             <Button
                             type="submit"
-                            onClick={sendAnswer}
+                            // onClick={sendAnswer}
                             disabled={loading}
+                         
                             >
                                 Отправить
                             </Button>
-                        </Form>                       
+                        </Form >                       
                         }
                         {   
                             (answerStud.length > 0 &&  answerMap(answerStud) === userId) &&
-                               
                             answerFilter(answerStud).map((an, i) => {
                                
                             return (
