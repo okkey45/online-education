@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { SubjectList } from '../Subject/SubjectList';
 
-export const GroupDetail = ({ training, group }) => {
+export const GroupDetail = ({ group }) => {
 	return (
 		<>
 			<div className="widget__wrapper has-shadow">
