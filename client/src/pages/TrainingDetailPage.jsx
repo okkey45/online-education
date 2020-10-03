@@ -50,7 +50,10 @@ export const TrainingDetailPage = () => {
 										<h4 className="widget__title">Описание тренинга</h4>
 									</div>
 									<div className="widget__body">
-										<p>{training.description}</p>
+										<p className="font-italic">{training.description}</p>
+										<div
+											dangerouslySetInnerHTML={{ __html: training.detail_text }}
+										/>
 									</div>
 								</div>
 							</Col>
