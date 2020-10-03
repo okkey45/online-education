@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { check } = require('express-validator');
 const slugify = require('@sindresorhus/slugify');
 const Training = require('../models/Training');
 const User_Groups = require('../models/User_Groups');
@@ -6,26 +7,32 @@ const Group = require('../models/Group');
 const auth = require('../middleware/auth.middleware');
 const router = Router();
 
-router.post('/create', auth, async (req, res) => {
-	try {
-		const { title, description, detail_text } = req.body;
-		const code = slugify(title);
+router.post(
+	'/create',
+	[auth, check('deatil_text').escape()],
+	async (req, res) => {
+		try {
+			const { title, description, detail_text } = req.body;
+			const code = slugify(title);
 
-		const training = new Training({
-			title,
-			description,
-			detail_text,
-			code,
-			author_id: req.user.userId,
-		});
+			const training = new Training({
+				title,
+				description,
+				detail_text,
+				code,
+				author_id: req.user.userId,
+			});
 
-		await training.save();
-		res.status(201).json({ training });
-	} catch (e) {
-		console.log('_create_training___', e);
-		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
-	}
-});
+			await training.save();
+			res.status(201).json({ training });
+		} catch (e) {
+			console.log('_create_training___', e);
+			res
+				.status(500)
+				.json({ message: 'Что-то пошло не так, попробуйте снова' });
+		}
+	},
+);
 
 router.get('/', auth, async (req, res) => {
 	try {
