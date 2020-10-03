@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const slugify = require('@sindresorhus/slugify');
 const Subject = require('../models/Subject');
+const Training = require('../models/Training');
 const auth = require('../middleware/auth.middleware');
 const router = Router();
 
@@ -18,6 +19,23 @@ router.post('/create', auth, async (req, res) => {
 		});
 
 		await subject.save();
+
+		const training = await Training.findById(req.body.training_id);
+
+		if (subject && training) {
+			const subjects = training.subject_ids;
+			const currentSubject = subjects.find((subj) => subj === subject._id);
+
+			if (currentSubject) {
+				return res.status(400).json({
+					message: 'Тема с таким ID уже существует.',
+				});
+			} else {
+				subjects.push(subject._id);
+				await training.updateOne({ subject_ids: subjects });
+			}
+		}
+
 		res.status(201).json({ subject });
 	} catch (e) {
 		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
