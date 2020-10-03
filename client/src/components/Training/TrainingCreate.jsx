@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
+import { TextEditorWysiwyg } from '../TextEditor/TextEditorWysiwyg';
 
 import { Col, Form, Button } from 'react-bootstrap';
 
@@ -12,6 +13,7 @@ export const TrainingCreate = () => {
 	const [form, setForm] = useState({
 		title: '',
 		description: '',
+		detail_text: '',
 	});
 
 	const changeHandler = (event) => {
@@ -53,6 +55,15 @@ export const TrainingCreate = () => {
 								onChange={changeHandler}
 							/>
 						</Form.Group>
+						<Form.Group controlId="inputDetailText" className="mb-3">
+							<Form.Label>Описание тренинга</Form.Label>
+							<Form.Control
+								as="textarea"
+								name="detail_text"
+								value={form.detail_text}
+								onChange={changeHandler}
+							/>
+						</Form.Group>
 						<Button
 							className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
 							type="submit"
@@ -62,6 +73,7 @@ export const TrainingCreate = () => {
 							Сохранить тренинг
 						</Button>
 					</Form>
+					{/* <TextEditorWysiwyg /> */}
 				</div>
 			</div>
 		</Col>
