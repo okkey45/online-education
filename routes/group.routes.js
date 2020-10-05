@@ -40,15 +40,6 @@ router.get('/', auth, async (req, res) => {
 	}
 });
 
-/* router.get('/:id', auth, async (req, res) => {
-	try {
-		const group = await Group.findById(req.params.id);
-		res.json(group);
-	} catch (e) {
-		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
-	}
-}); */
-
 router.get('/:id', auth, async (req, res) => {
 	try {
 		const group = await Group.findById(req.params.id)

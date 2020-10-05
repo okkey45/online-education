@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import { useHttp } from '../hooks/http.hook';
 import { AuthContext } from '../context/AuthContext';
-import { useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout/Layout';
 import { Loader } from '../components/Loader/Loader';
 import { GroupDetail } from '../components/Group/GroupDetail';
