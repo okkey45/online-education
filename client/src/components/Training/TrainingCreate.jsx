@@ -49,7 +49,7 @@ export const TrainingCreate = () => {
 		<Col>
 			<div className="widget__wrapper has-shadow">
 				<div className="widget__body">
-					<Form className="form__createTraining" onSubmit={saveHandler}>
+					<Form className="form__createTraining">
 						<Form.Group controlId="inputTitle" className="mb-3">
 							<Form.Label>Заголовок</Form.Label>
 							<Form.Control
@@ -79,6 +79,7 @@ export const TrainingCreate = () => {
 						<Button
 							className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
 							type="submit"
+							onClick={saveHandler}
 							disabled={loading}
 						>
 							Сохранить

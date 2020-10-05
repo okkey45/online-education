@@ -24,10 +24,10 @@ export const SubjectList = ({ trainingId, trainingTitle }) => {
 				);
 
 				data.sort((a, b) => {
-					if (a.start_date > b.start_date) {
+					if (a.sorting > b.sorting) {
 						return 1;
 					}
-					if (a.start_date < b.start_date) {
+					if (a.sorting < b.sorting) {
 						return -1;
 					}
 
@@ -59,8 +59,10 @@ export const SubjectList = ({ trainingId, trainingTitle }) => {
 						className="btn btn-primary"
 						to={{
 							pathname: '/subject/create',
-							trainingId,
-							trainingTitle,
+							state: {
+								trainingId,
+								trainingTitle,
+							},
 						}}
 					>
 						Create Subject
@@ -80,13 +82,13 @@ export const SubjectList = ({ trainingId, trainingTitle }) => {
 					{subjects.map((el, i) => {
 						return (
 							<li
-								className={`subject__item${
+								/* className={`subject__item${
 									today >= new Date(el.start_date) ? ' active' : ''
-								}`}
+								}`} */
 								key={i}
 							>
 								<span className="subject__date">
-									{new Date(el.start_date).toLocaleDateString()}
+									{/* {new Date(el.start_date).toLocaleDateString()} */}
 								</span>
 								<Link to={`/subject/${el._id}`} className="subject__title">
 									{el.title}
