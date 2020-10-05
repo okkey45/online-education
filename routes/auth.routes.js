@@ -1,11 +1,38 @@
 const { Router } = require('express');
+const { check, validationResult } = require('express-validator');
 const config = require('config');
 const bcrypt = require('bcryptjs');
-const { check, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const accActivate = require('../middleware/accounActivate.middleware');
 const User = require('../models/User');
 const User_Groups = require('../models/User_Groups');
 const router = Router();
+const nodemailer = require('nodemailer');
+
+const sendUserMail = async (userName = '', userEmail, token) => {
+	const transporter = nodemailer.createTransport({
+		host: 'smtp.yandex.ru',
+		port: 465,
+		secure: true,
+		auth: {
+			user: config.get('mailerUser'),
+			pass: config.get('mailerPass'),
+		},
+	});
+
+	const info = await transporter.sendMail({
+		from: '"Online Education 👻" <no-reply@chalinclub.ru>', // sender address
+		to: userEmail, // list of receivers
+		subject: `Hello ${userName} ! Confirm your email ✔`, // Subject line
+		//text: 'Hello world?', // plain text body
+		html: `
+			<h2>Для завершения регистрации перейдите по ссылке:</h2>
+			<p>${config.get('baseUrl')}/api/auth/activate/${token}</p>
+		`, // html body
+	});
+
+	console.log('Message sent: %s', info.messageId);
+};
 
 // /api/auth/register
 router.post(
@@ -41,33 +68,16 @@ router.post(
 					.json({ message: 'Такой пользователь уже существует' });
 			}
 
-			const hashedPassword = await bcrypt.hash(password, 12);
-			const user = new User({
-				name,
-				email,
-				password: hashedPassword,
-				roles: rolesArr,
-			});
-
-			await user.save();
-
-			// Добавить пользователя в группу Все пользователи
-			/* const user_groups = new User_Groups({
-				user_id: user._id,
-				group_ids: '5f537698623f050aa4a2f3ab',
-			});
-
-			await user_groups.save(); */
-
-			const token = jwt.sign(
-				{ userId: user._id, userRoles: user.roles },
-				config.get('jwtSecret'),
-				{
-					expiresIn: '12h',
-				},
+			const confirmToken = jwt.sign(
+				{ name, email, password, rolesArr },
+				config.get('jwtActivate'),
+				{ expiresIn: '30m' },
 			);
 
-			res.json({ token, userId: user._id });
+			// Отправляем пользователю письмо для активации аккаунта
+			sendUserMail(name, email, confirmToken).catch(console.error);
+
+			res.status(200).json({ message: 'Send email', email });
 		} catch (e) {
 			res
 				.status(500)
@@ -75,6 +85,36 @@ router.post(
 		}
 	},
 );
+
+// /api/auth/activate/:token
+router.get('/activate/:token', accActivate, async (req, res) => {
+	try {
+		const { name, email, password, rolesArr } = req.user;
+
+		const hashedPassword = await bcrypt.hash(password, 12);
+		const user = new User({
+			name,
+			email,
+			password: hashedPassword,
+			roles: rolesArr,
+		});
+
+		await user.save();
+
+		const token = jwt.sign(
+			{ userId: user._id, userRoles: user.roles },
+			config.get('jwtSecret'),
+			{
+				expiresIn: '12h',
+			},
+		);
+
+		//res.status(201).json({ token, userId: user._id });
+		res.redirect(200, `${config.get('baseUrl')}`);
+	} catch (e) {
+		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
+	}
+});
 
 // /api/auth/login
 router.post(
