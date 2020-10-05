@@ -61,6 +61,7 @@ export const AnswerStudent = () => {
 				Authorization: `Bearer ${token}`,
             });
             setAnswerStud(data)
+            console.log(data);
 		} catch (e) {}
     }, [token, request, subjectId]);
         
@@ -69,23 +70,24 @@ export const AnswerStudent = () => {
     }, [getAnswers, subjectId]);
     const answerMap = () => {
         if (answerStud.length > 0) {
-            const author = answerStud.map(aut => aut.author_id)
+            const author = answerStud.map(aut => aut.author_id._id)
             const author2 = author.filter(a => a == userId)
             const author3 = String(author2[0])
         return author3
     }}
     const answerFilter = () => {
         if (answerStud.length > 0) { 
-            const ans = answerStud.filter(a => a.author_id == userId)
+            const ans = answerStud.filter(a => a.author_id._id == userId)
             return ans
     }}
 
        return ( 
+
                 <>
                     { (String(userRolStudent) === 'student') && 
                         <div>
                             { 
-                            (answerStud.length < 1 || answerMap(answerStud) !== userId)  && 
+                           (answerStud.length < 1 || answerMap(answerStud) !== userId)  && 
                                 <Form className="form__createTraining mb-3" onSubmit={sendAnswer}>
                                 <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
                                     <Form.Label>Ответ студента:</Form.Label>
@@ -107,15 +109,15 @@ export const AnswerStudent = () => {
                             </Form >                       
                             }
                             {   
-                                (answerStud.length > 0 &&  answerMap(answerStud) === userId) &&
-                                answerFilter(answerStud).map((an, i) => {                               
-                                return (
+                               (answerStud.length > 0 &&  answerMap(answerStud) === userId) &&
+                               answerFilter(answerStud).map((an, i) => {                               
+                               return (
                                     <div key={i}>
                                         <p className="mb-3">Ответ:</p>
                                         <p>{an.stud_response}</p>
                                     </div>  
-                                    )
-                                })  
+                                   )
+                               })  
                             }
                         </div>
                     }
@@ -125,17 +127,17 @@ export const AnswerStudent = () => {
                           {
                               answerStud.length > 0  &&        
                               answerStud.map((an, i) => {
-    
+                                    console.log(an);
                               return (
                                   <div key={i}>
                                       <p>Дата: {new Date(an.creation_date).toLocaleDateString()} {new Date(an.creation_date).toLocaleTimeString()}</p>
-                                      <p>Ответ студента: {an.author_id}</p>
+                                      <p>Ответ студента: {an.author_id.name}</p>
                                       <p className="mt-3">{an.stud_response}</p>
                                       <div>
                                           {
-                                              (answerStud.length < 1 || answerMap(answerStud) !== userId)  && 
+                                              (answerTeacher.length < 1 || answerMap(answerTeacher) !== userId)  && 
                                                 <Form className="form__createTraining mb-3" onSubmit={sendAnswerTeacher}>
-                                                    <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
+                                                    <Form.Group controlId="answerTeacher" className="mb-3">
                                                         <Form.Label>Комментарий учителя:</Form.Label>
                                                         <Form.Control
                                                         as="textarea"
@@ -155,12 +157,12 @@ export const AnswerStudent = () => {
                                                 </Form>
                                           }
                                             {   
-                                                (answerStud.length > 0 &&  answerMap(answerStud) === userId) &&
-                                                answerFilter(answerStud).map((an, i) => {                               
+                                                (answerTeacher.length > 0 &&  answerMap(answerTeacher) === userId) &&
+                                                answerFilter(answerTeacher).map((an, i) => {                               
                                                 return (
                                                     <div key={i}>
                                                         <p className="mb-3">Ответ:</p>
-                                                        <p>{an.stud_response}</p>
+                                                        <p>{an.prof_response}</p>
                                                     </div>  
                                                     )
                                                 })  
