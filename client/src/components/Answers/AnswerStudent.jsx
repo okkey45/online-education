@@ -15,22 +15,22 @@ export const AnswerStudent = () => {
         stud_response: '',
         creation_date: Date.now(),
     });
-    // const [formTeach, setFormTeach] = useState({
-    //     prof_response: '',
-    //     score: '',
-    //     date_of_change: Date.now(),
-    // });
+    const [formTeach, setFormTeach] = useState({
+        prof_response: '',
+        score: '',
+        date_of_change: Date.now(),
+    });
     
 
     const userRolStudent = userRoles.filter(rol => rol === 'student')
-   // const userRolTeacher = userRoles.filter(rol => rol === 'teacher')
+    const userRolTeacher = userRoles.filter(rol => rol === 'teacher')
 
     const changeHandler = (event) => {
        setForm({ ...form, [event.target.name]: event.target.value });
     };
-    // const changeHandlerTeach = (event) => {
-    //     setFormTeach({ ...formTeach, [event.target.name]: event.target.value });
-    //  };
+    const changeHandlerTeach = (event) => {
+        setFormTeach({ ...formTeach, [event.target.name]: event.target.value });
+     };
     const sendAnswer = async (event) => {
 
     try {
@@ -43,18 +43,18 @@ export const AnswerStudent = () => {
             setAnswerStud(data)
 		} catch (e) {}
     };
-//     const sendAnswerTeacher = async (event) => {
-// 		try {
-// 			const data = await request(
-// 				`/api/answers/create`,
-// 				'POST',
-//                 { ...formTeach },
-//                 { Authorization: `Bearer ${token}` },
-//             );
-//             setAnswerTeacher(data); 
-// console.log(data);
-// 		} catch (e) {}
-//     };
+    const sendAnswerTeacher = async (event) => {
+		try {
+			const data = await request(
+				`/api/answers/edit/${subjectId}`,
+				'PUT',
+                { ...formTeach },
+                { Authorization: `Bearer ${token}` },
+            );
+            setAnswerTeacher(data); 
+            console.log(data);
+		} catch (e) {}
+    };
     const getAnswers = useCallback(async () => {
 		try {
         const data = await request(`/api/answers/${subjectId}`, 'GET', null, {
@@ -120,43 +120,59 @@ export const AnswerStudent = () => {
                         </div>
                     }
                     {
-                    // (String(userRolTeacher) === 'teacher') && 
-                    //   <div>
-                    //       {
-                    //           answerStud.length > 0  &&        
-                    //           answerStud.map((an, i) => {
-            
-                    //           return (
-                    //               <div key={i}>
-                    //                   <p>Ответ студента:</p>
-                    //                   <p className="mt-3">{an.stud_response}</p>
-                    //               </div> 
-                    //               )
-                    //           })
-                    //       }
-                    //       {                         
-                    //     <Form className="form__createTraining mb-3">
-                    //          <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
-                    //              <Form.Label>Комментарий учителя:</Form.Label>
-                    //              <Form.Control
-                    //              as="textarea"
-                    //              rows="3" 
-                    //              className="textarea-answer"
-                    //              name="prof_response"
-                    //              value={formTeach.prof_response}
-                    //              onChange={changeHandlerTeach}
-                    //              />
-                    //          </Form.Group>
-                    //          <Button
-                    //          type="submit"
-                    //          onClick={sendAnswerTeacher}
-                    //          disabled={loading}
-                    //          >
-                    //              Отправить
-                    //          </Button>
-                    //      </Form>                    
-                    //       }
-                    //   </div>
+                    (String(userRolTeacher) === 'teacher') && 
+                      <div>
+                          {
+                              answerStud.length > 0  &&        
+                              answerStud.map((an, i) => {
+    
+                              return (
+                                  <div key={i}>
+                                      <p>Дата: {new Date(an.creation_date).toLocaleDateString()} {new Date(an.creation_date).toLocaleTimeString()}</p>
+                                      <p>Ответ студента: {an.author_id}</p>
+                                      <p className="mt-3">{an.stud_response}</p>
+                                      <div>
+                                          {
+                                              (answerStud.length < 1 || answerMap(answerStud) !== userId)  && 
+                                                <Form className="form__createTraining mb-3" onSubmit={sendAnswerTeacher}>
+                                                    <Form.Group controlId="pleForm.ControlTextarea1" className="mb-3">
+                                                        <Form.Label>Комментарий учителя:</Form.Label>
+                                                        <Form.Control
+                                                        as="textarea"
+                                                        rows="3" 
+                                                        className="textarea-answer"
+                                                        name="prof_response"
+                                                        value={formTeach.prof_response}
+                                                        onChange={changeHandlerTeach}
+                                                        />
+                                                    </Form.Group>
+                                                    <Button
+                                                        type="submit"                   
+                                                        disabled={loading}
+                                                        >
+                                                            Отправить
+                                                    </Button>
+                                                </Form>
+                                          }
+                                            {   
+                                                (answerStud.length > 0 &&  answerMap(answerStud) === userId) &&
+                                                answerFilter(answerStud).map((an, i) => {                               
+                                                return (
+                                                    <div key={i}>
+                                                        <p className="mb-3">Ответ:</p>
+                                                        <p>{an.stud_response}</p>
+                                                    </div>  
+                                                    )
+                                                })  
+                                            }
+                                      </div>
+
+                                  </div> 
+                                  )
+                              })
+                          }
+
+                      </div>
                     }  
                 </>
             );
