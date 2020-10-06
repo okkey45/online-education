@@ -43,18 +43,21 @@ export const AnswerStudent = () => {
             setAnswerStud(data)
 		} catch (e) {}
     };
-    const sendAnswerTeacher = async (event) => {
-		try {
-			const data = await request(
-				`/api/answers/edit/${subjectId}`,
-				'PUT',
-                { ...formTeach },
-                { Authorization: `Bearer ${token}` },
-            );
-            setAnswerTeacher(data); 
-            console.log(data);
-		} catch (e) {}
-    };
+ 
+
+        const sendAnswerTeacher = async (id) => {
+            try {
+                const data = await request(
+                    `/api/answers/edit/${id}`,
+                    'PUT',
+                    { ...formTeach },
+                    { Authorization: `Bearer ${token}` },
+                );
+                setAnswerTeacher(data); 
+            } catch (e) {}
+        
+    }
+
     const getAnswers = useCallback(async () => {
 		try {
         const data = await request(`/api/answers/${subjectId}`, 'GET', null, {
@@ -80,6 +83,48 @@ export const AnswerStudent = () => {
             const ans = answerStud.filter(a => a.author_id._id == userId)
             return ans
     }}
+
+    const openAnswerTeacher = (id) => {
+console.log(id);
+       return (
+           <div>
+               {
+                  // (answerTeacher.length < 1 || answerMap(answerTeacher) !== userId)  && 
+                   
+                    <Form className="form__createTraining mb-3" onSubmit={e => sendAnswerTeacher(id)}>
+                        <Form.Group controlId="answerTeacher" className="mb-3">
+                            <Form.Label>Комментарий учителя:</Form.Label>
+                            <Form.Control
+                            as="textarea"
+                            rows="3" 
+                            className="textarea-answer"
+                            name="prof_response"
+                            value={formTeach.prof_response}
+                            onChange={changeHandlerTeach}
+                            />
+                        </Form.Group>
+                        <Button
+                            type="submit"                   
+                            disabled={loading}
+                            >
+                                Отправить
+                        </Button>
+                    </Form>
+                }
+                {   
+                   // (answerTeacher.length > 0 &&  answerMap(answerTeacher) === userId) &&
+                    answerFilter(answerTeacher).map((an, i) => {                               
+                    return (
+                        <div key={i}>
+                            <p className="mb-3">Ответ:</p>
+                            <p>{an.prof_response}</p>
+                        </div>  
+                        )
+                    })  
+                }
+          </div>   
+       )
+    }
 
        return ( 
 
@@ -127,48 +172,20 @@ export const AnswerStudent = () => {
                           {
                               answerStud.length > 0  &&        
                               answerStud.map((an, i) => {
-                                    console.log(an);
+                                  const a = an._id
+                                    console.log(an._id);
                               return (
                                   <div key={i}>
                                       <p>Дата: {new Date(an.creation_date).toLocaleDateString()} {new Date(an.creation_date).toLocaleTimeString()}</p>
                                       <p>Ответ студента: {an.author_id.name}</p>
                                       <p className="mt-3">{an.stud_response}</p>
-                                      <div>
-                                          {
-                                              (answerTeacher.length < 1 || answerMap(answerTeacher) !== userId)  && 
-                                                <Form className="form__createTraining mb-3" onSubmit={sendAnswerTeacher}>
-                                                    <Form.Group controlId="answerTeacher" className="mb-3">
-                                                        <Form.Label>Комментарий учителя:</Form.Label>
-                                                        <Form.Control
-                                                        as="textarea"
-                                                        rows="3" 
-                                                        className="textarea-answer"
-                                                        name="prof_response"
-                                                        value={formTeach.prof_response}
-                                                        onChange={changeHandlerTeach}
-                                                        />
-                                                    </Form.Group>
-                                                    <Button
-                                                        type="submit"                   
-                                                        disabled={loading}
-                                                        >
-                                                            Отправить
-                                                    </Button>
-                                                </Form>
-                                          }
-                                            {   
-                                                (answerTeacher.length > 0 &&  answerMap(answerTeacher) === userId) &&
-                                                answerFilter(answerTeacher).map((an, i) => {                               
-                                                return (
-                                                    <div key={i}>
-                                                        <p className="mb-3">Ответ:</p>
-                                                        <p>{an.prof_response}</p>
-                                                    </div>  
-                                                    )
-                                                })  
-                                            }
-                                      </div>
-
+                                      <Button
+                                        type="submit"
+                                        className="mb-3"                                        
+                                        onClick = {e => openAnswerTeacher(a)}                
+                                        >                                            
+                                            Ответить
+                                      </Button>
                                   </div> 
                                   )
                               })
