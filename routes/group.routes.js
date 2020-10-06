@@ -2,10 +2,25 @@ const { Router } = require('express');
 const Group = require('../models/Group');
 const auth = require('../middleware/auth.middleware');
 const generateCode = require('../middleware/generateSimbolCode.middleware');
+const { check, validationResult } = require('express-validator');
 const router = Router();
 
-router.post('/create', [auth, generateCode], async (req, res) => {
+router.post('/create',
+	[auth, generateCode,
+	 check('name', 'Минимальная длина 5 символов').isLength({min:5}).trim(),
+	 check('description', 'Минимальная длина 30 символов').isLength({min:30}).trim(),
+	],
+	 async (req, res) => {
 	try {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				errors: errors.array(),
+				message: 'Некорректные данные при создании группы',
+			});
+		}
+
 		const {
 			name,
 			description,
@@ -39,15 +54,6 @@ router.get('/', auth, async (req, res) => {
 		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
 	}
 });
-
-/* router.get('/:id', auth, async (req, res) => {
-	try {
-		const group = await Group.findById(req.params.id);
-		res.json(group);
-	} catch (e) {
-		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
-	}
-}); */
 
 router.get('/:id', auth, async (req, res) => {
 	try {

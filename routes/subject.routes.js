@@ -1,11 +1,26 @@
 const { Router } = require('express');
 const slugify = require('@sindresorhus/slugify');
 const Subject = require('../models/Subject');
+const Training = require('../models/Training');
 const auth = require('../middleware/auth.middleware');
+const { check, validationResult } = require('express-validator');
 const router = Router();
 
-router.post('/create', auth, async (req, res) => {
+router.post('/create',
+	[auth,
+	check('title', 'Минимальная длина 5 символов').isLength({min:5}).trim(),
+	check('context', 'Минимальная длина 10 символов').isLength({min:10}).trim()],
+	async (req, res) => {
 	try {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				errors: errors.array(),
+				message: 'Некорректные данные при создании урока',
+			});
+		}
+
 		const { title, context, training_id, start_date } = req.body;
 		const code = slugify(title);
 
@@ -18,6 +33,23 @@ router.post('/create', auth, async (req, res) => {
 		});
 
 		await subject.save();
+
+		const training = await Training.findById(req.body.training_id);
+
+		if (subject && training) {
+			const subjects = training.subject_ids;
+			const currentSubject = subjects.find((subj) => subj === subject._id);
+
+			if (currentSubject) {
+				return res.status(400).json({
+					message: 'Тема с таким ID уже существует.',
+				});
+			} else {
+				subjects.push(subject._id);
+				await training.updateOne({ subject_ids: subjects });
+			}
+		}
+
 		res.status(201).json({ subject });
 	} catch (e) {
 		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
@@ -53,8 +85,20 @@ router.get('/edit/:id', auth, async (req, res) => {
 	}
 });
 
-router.put('/edit/:id', auth, async (req, res) => {
+router.put('/edit/:id', [auth,
+	check('title', 'Минимальная длина 5 символов').isLength({min:5}).trim(),
+	check('context', 'Минимальная длина 10 символов').isLength({min:10}).trim()],
+	async (req, res) => {
 	try {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				errors: errors.array(),
+				message: 'Некорректные данные при редактировании урока',
+			});
+		}
+
 		const { title, context, training_id, start_date } = req.body;
 
 		const subject = await Subject.findById(req.params.id);

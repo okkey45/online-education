@@ -6,8 +6,8 @@ import { Nav } from 'react-bootstrap';
 import { ReactComponent as IconUsers } from '../../img/users.svg';
 import { ReactComponent as IconUser } from '../../img/user.svg';
 import { ReactComponent as IconUserTwo } from '../../img/user-2.svg';
-import { ReactComponent as IconFile } from '../../img/file.svg';
 import { ReactComponent as OpenBook } from '../../img/open-book.svg';
+import { ReactComponent as IconStudy } from '../../img/study.svg';
 import { ReactComponent as LogOut } from '../../img/logout.svg';
 
 export const Sidebar = (props) => {
@@ -72,29 +72,34 @@ export const Sidebar = (props) => {
 									</li>
 								</ul>
 							</li>
+							<li className="side-navbar__item sb-dropdown">
+								<span
+									className="side-navbar__link sb-dropdown__toggler"
+									onClick={dropdownToggler}
+								>
+									<OpenBook className="side-navbar__icon icon-trainings" />
+									<span className="side-navbar__link--title">Тренинги</span>
+								</span>
+								<ul className="nav sb-dropdown__menu flex-column">
+									<li className="nav-item sb-dropdown__item">
+										<Link to="/trainings" className="sb-dropdown__link">
+											Все тренинги
+										</Link>
+									</li>
+									<li className="nav-item sb-dropdown__item">
+										<Link to="/training/create" className="sb-dropdown__link">
+											Добавить тренинг
+										</Link>
+									</li>
+								</ul>
+							</li>
 						</>
 					)}
 					<li className="side-navbar__item">
-						<Link to="/training/create" className="side-navbar__link">
-							<IconFile className="side-navbar__icon icon-user" />
-							<span className="side-navbar__link--title">Добавить тренинг</span>
-						</Link>
-					</li>
-					<li className="side-navbar__item sb-dropdown">
-						<span
-							className="side-navbar__link sb-dropdown__toggler"
-							onClick={dropdownToggler}
-						>
-							<OpenBook className="side-navbar__icon icon-edu" />
+						<Link to="/trainings" className="side-navbar__link">
+							<IconStudy className="side-navbar__icon icon-edu" />
 							<span className="side-navbar__link--title">Обучение</span>
-						</span>
-						<ul className="nav sb-dropdown__menu flex-column">
-							<li className="nav-item sb-dropdown__item">
-								<Link to="/trainings" className="sb-dropdown__link">
-									Тренинги
-								</Link>
-							</li>
-						</ul>
+						</Link>
 					</li>
 					<li className="side-navbar__item">
 						<Link to="/profile" className="side-navbar__link">
