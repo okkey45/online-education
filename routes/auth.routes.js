@@ -21,13 +21,18 @@ const sendUserMail = async (userName = '', userEmail, token) => {
 	});
 
 	const info = await transporter.sendMail({
-		from: '"Online Education 👻" <no-reply@chalinclub.ru>', // sender address
+		from: '"Online Education 👻" <o.education@yandex.ru>', // sender address
 		to: userEmail, // list of receivers
 		subject: `Hello ${userName} ! Confirm your email ✔`, // Subject line
 		//text: 'Hello world?', // plain text body
 		html: `
 			<h2>Для завершения регистрации перейдите по ссылке:</h2>
-			<p>${config.get('baseUrl')}/api/auth/activate/${token}</p>
+			<p><a href="${config.get(
+				'baseUrl',
+			)}/api/auth/activate/${token}">Активировать аккаунт</a></p>
+			<p>При успешном активировании вы будете перенаправлены на страницу авторизации.</p>
+			<p>Логин: ${userEmail}</p>
+			<p>Пароль: ваш пароль</p>
 		`, // html body
 	});
 
