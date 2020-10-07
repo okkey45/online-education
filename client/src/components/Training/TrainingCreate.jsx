@@ -17,9 +17,7 @@ export const TrainingCreate = () => {
 		title: '',
 		description: '',
 	});
-	const [editorState, setEditorState] = useState(() => {
-		EditorState.createEmpty();
-	});
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });

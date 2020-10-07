@@ -17,9 +17,7 @@ export const SubjectCreate = () => {
 		title: '',
 		sorting: '',
 	});
-	const [editorState, setEditorState] = useState(() => {
-		EditorState.createEmpty();
-	});
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 	const { trainingId, trainingTitle } = history.location.state;
 
 	const changeHandler = (event) => {
