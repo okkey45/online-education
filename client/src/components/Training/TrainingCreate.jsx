@@ -17,9 +17,7 @@ export const TrainingCreate = () => {
 		title: '',
 		description: '',
 	});
-	const [editorState, setEditorState] = useState(() => {
-		EditorState.createEmpty();
-	});
+	const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
@@ -49,7 +47,7 @@ export const TrainingCreate = () => {
 		<Col>
 			<div className="widget__wrapper has-shadow">
 				<div className="widget__body">
-					<Form className="form__createTraining" onSubmit={saveHandler}>
+					<Form className="form__createTraining">
 						<Form.Group controlId="inputTitle" className="mb-3">
 							<Form.Label>Заголовок</Form.Label>
 							<Form.Control
@@ -79,6 +77,7 @@ export const TrainingCreate = () => {
 						<Button
 							className="btn btn-primary btn__gradient btn__grad-danger btn__sign-in"
 							type="submit"
+							onClick={saveHandler}
 							disabled={loading}
 						>
 							Сохранить

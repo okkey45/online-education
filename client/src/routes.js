@@ -83,7 +83,10 @@ export const useRoutes = (isAuthenticated) => {
 			<Route path="/register" exact>
 				<AuthPage action="register" />
 			</Route>
-			<Redirect to="/" />
+			<Route path="/register/waiting-confirm" exact>
+				<AuthPage action="registerWaitingConfirm" />
+			</Route>
+			<Redirect to="/" exact />
 		</Switch>
 	);
 };
