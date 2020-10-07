@@ -2,8 +2,12 @@ import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
 
 import { Col, Form, Button } from 'react-bootstrap';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 export const SubjectCreate = () => {
 	const history = useHistory();
@@ -11,24 +15,34 @@ export const SubjectCreate = () => {
 	const { request, loading } = useHttp();
 	const [form, setForm] = useState({
 		title: '',
-		context: '',
-		start_date: Date.now(),
+		sorting: '',
 	});
-	const { trainingId, trainingTitle } = history.location;
+	const [editorState, setEditorState] = useState(() => {
+		EditorState.createEmpty();
+	});
+	const { trainingId, trainingTitle } = history.location.state;
 
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 	};
 
+	const onEditorStateChange = (editorState) => {
+		setEditorState(editorState);
+	};
+
 	const saveHandler = async (event) => {
+		const detailText = draftToHtml(
+			convertToRaw(editorState.getCurrentContent()),
+		);
+
 		try {
 			const data = await request(
 				'/api/subject/create',
 				'POST',
-				{ ...form, training_id: trainingId },
+				{ ...form, context: detailText, training_id: trainingId },
 				{ Authorization: `Bearer ${auth.token}` },
 			);
-			history.push(`/training/${trainingId}`);
+			if (data) history.push(`/training/${trainingId}`);
 		} catch (e) {}
 	};
 
@@ -51,24 +65,22 @@ export const SubjectCreate = () => {
 								onChange={changeHandler}
 							/>
 						</Form.Group>
-						<Form.Group controlId="inputStartDate" className="mb-3">
-							<Form.Label>Дата начала</Form.Label>
-							<Form.Control
-								type="date"
-								name="start_date"
-								value={form.start_date}
-								onChange={changeHandler}
-							/>
-						</Form.Group>
-						<Form.Group controlId="inputContext" className="mb-3">
-							<Form.Label>Текст занятия</Form.Label>
+						<Form.Group controlId="inputSorting" className="mb-3">
+							<Form.Label>Сортировка</Form.Label>
 							<Form.Control
 								type="text"
-								name="context"
-								value={form.context}
+								name="sorting"
+								value={form.sorting}
 								onChange={changeHandler}
 							/>
 						</Form.Group>
+						<Editor
+							editorState={editorState}
+							wrapperClassName="text-editor__wrapper"
+							toolbarClassName="text-editor____toolbar"
+							editorClassName="text-editor__editor"
+							onEditorStateChange={onEditorStateChange}
+						/>
 						<div className="btn__group">
 							<Button
 								className="btn btn-primary btn__gradient btn__grad-danger"

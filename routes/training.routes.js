@@ -51,7 +51,11 @@ router.get('/', auth, async (req, res) => {
 
 router.get('/:id', auth, async (req, res) => {
 	try {
-		const training = await await Training.findById(req.params.id);
+		const training = await await Training.findById(req.params.id).populate({
+			path: 'subject_ids',
+			model: 'Subject',
+			select: ['title', 'sorting'],
+		});
 		res.json(training);
 	} catch (e) {
 		console.log('_get_training_by_id__', e);
