@@ -21,7 +21,7 @@ const sendUserMail = async (userName = '', userEmail, token) => {
 	});
 
 	const info = await transporter.sendMail({
-		from: '"Online Education 👻" <o.education@yandex.ru>', // sender address
+		from: `"Online Education 👻" ${config.get('mailerFrom')}`, // sender address
 		to: userEmail, // list of receivers
 		subject: `Hello ${userName} ! Confirm your email ✔`, // Subject line
 		//text: 'Hello world?', // plain text body
@@ -114,8 +114,7 @@ router.get('/activate/:token', accActivate, async (req, res) => {
 			},
 		);
 
-		//res.status(201).json({ token, userId: user._id });
-		res.redirect(200, `${config.get('baseUrl')}`);
+		res.redirect(`${config.get('baseUrl')}/login`);
 	} catch (e) {
 		res.status(500).json({ message: 'Что-то пошло не так, попробуйте снова' });
 	}
