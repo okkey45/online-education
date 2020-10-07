@@ -20,8 +20,9 @@ export const TextEditorWysiwyg = () => {
 		<div>
 			<Editor
 				editorState={editorState}
-				wrapperClassName="demo-wrapper"
-				editorClassName="demo-editor"
+				wrapperClassName="wrapper-class"
+				editorClassName="editor-class"
+				toolbarClassName="toolbar-class"
 				onEditorStateChange={onEditorStateChange}
 			/>
 			{/* <textarea
