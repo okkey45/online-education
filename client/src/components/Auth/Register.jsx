@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { useHttp } from '../../hooks/http.hook';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import logo from '../../img/logo.png';
 
 export const Register = () => {
+	const history = useHistory();
 	const auth = useContext(AuthContext);
 	const { loading, request } = useHttp();
 	const [form, setForm] = useState({
@@ -24,7 +25,14 @@ export const Register = () => {
 			const data = await request('/api/auth/register', 'POST', {
 				...form,
 			});
-			auth.login(data.token, data.userId);
+			if (data) {
+				console.log(data);
+				history.push({
+					pathname: '/register/waiting-confirm',
+					state: { email: data.email },
+				});
+			}
+			//auth.login(data.token, data.userId);
 		} catch (e) {}
 	};
 
