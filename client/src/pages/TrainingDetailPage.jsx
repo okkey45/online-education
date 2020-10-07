@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { useParams } from 'react-router-dom';
 import { Layout } from '../components/Layout/Layout';
 import { Loader } from '../components/Loader/Loader';
+import { TrainingDetail } from '../components/Training/TrainingDetail';
 import { SubjectList } from '../components/Subject/SubjectList';
 
 import { Col } from 'react-bootstrap';
@@ -27,40 +28,15 @@ export const TrainingDetailPage = () => {
 		getTraining();
 	}, [getTraining]);
 
+	if (loading || !training) return <Loader />;
+
 	return (
 		<Layout
 			page={{
 				name: String(training.title),
 				title: `${training.title} - MyNewLife club`,
 			}}
-			content={
-				<>
-					{(loading || !training) && <Loader />}
-					{!loading && training && (
-						<>
-							<Col xl={3}>
-								<SubjectList
-									trainingId={training._id}
-									trainingTitle={training.title}
-								/>
-							</Col>
-							<Col xl={9}>
-								<div className="widget__wrapper has-shadow">
-									<div className="widget__header">
-										<h4 className="widget__title">Описание тренинга</h4>
-									</div>
-									<div className="widget__body">
-										<p className="font-italic">{training.description}</p>
-										<div
-											dangerouslySetInnerHTML={{ __html: training.detail_text }}
-										/>
-									</div>
-								</div>
-							</Col>
-						</>
-					)}
-				</>
-			}
+			content={<TrainingDetail training={training} />}
 		/>
 	);
 };

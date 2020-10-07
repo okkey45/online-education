@@ -1,21 +1,22 @@
 const { Router } = require('express');
+const { body } = require('express-validator');
 const slugify = require('@sindresorhus/slugify');
 const Subject = require('../models/Subject');
 const Training = require('../models/Training');
 const auth = require('../middleware/auth.middleware');
 const router = Router();
 
-router.post('/create', auth, async (req, res) => {
+router.post('/create', [auth, body('context').escape()], async (req, res) => {
 	try {
-		const { title, context, training_id, start_date } = req.body;
+		const { title, sorting = 500, context, training_id } = req.body;
 		const code = slugify(title);
 
 		const subject = new Subject({
 			title,
+			sorting,
 			code,
 			training_id,
 			context,
-			start_date,
 		});
 
 		await subject.save();
@@ -92,6 +93,12 @@ router.put('/edit/:id', auth, async (req, res) => {
 router.delete('/delete/:id', auth, async (req, res) => {
 	try {
 		const subject = await Subject.findOneAndDelete({ _id: req.params.id });
+
+		const training = await Training.findById(subject.training_id);
+		const subjectArr = training.subject_ids.splice(indexOf(req.params.id), 1);
+
+		await training.updateOne({ subject_ids: subjectArr });
+
 		res.send(subject);
 	} catch (e) {
 		res
