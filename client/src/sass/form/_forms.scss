@@ -1,5 +1,18 @@
 @charset "UTF-8";
 
+.form-group {
+	position: relative;
+}
+.valid-feedback,
+.invalid-feedback {
+	position: absolute;
+	bottom: -10px;
+	left: 10px;
+	width: auto;
+	padding: 0 5px;
+	background-color: #fff;
+}
+
 @import './input';
 @import './form-sign-in';
 @import './form-find-user';
