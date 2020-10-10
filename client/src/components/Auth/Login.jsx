@@ -2,13 +2,14 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
+import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import logo from '../../img/logo.png';
 
 export const Login = () => {
 	const auth = useContext(AuthContext);
-	const { loading, request } = useHttp();
+	const { loading, request, errors, clearErrors } = useHttp();
 	const [form, setForm] = useState({
 		email: '',
 		password: '',
@@ -16,6 +17,7 @@ export const Login = () => {
 
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
+		clearErrors();
 	};
 
 	const loginHandler = async () => {
@@ -62,6 +64,9 @@ export const Login = () => {
 								/>
 								<Form.Label>Email</Form.Label>
 								<span className="bar"></span>
+								{errors && errors.length > 0 && (
+									<ErrorMessage errors={errors} fieldName="email" />
+								)}
 							</Form.Group>
 							<Form.Group controlId="inputPassword">
 								<Form.Control
@@ -72,6 +77,9 @@ export const Login = () => {
 								/>
 								<Form.Label>Password</Form.Label>
 								<span className="bar"></span>
+								{errors && errors.length > 0 && (
+									<ErrorMessage errors={errors} fieldName="password" />
+								)}
 							</Form.Group>
 							<div className="form__include">
 								<Form.Check
