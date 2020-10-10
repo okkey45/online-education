@@ -1,14 +1,16 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useHttp } from '../../hooks/http.hook';
 import { AuthContext } from '../../context/AuthContext';
+import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
 import { Form, Button } from 'react-bootstrap';
 
 export const UserCreate = () => {
-	const { loading, request } = useHttp();
+	const { loading, request, errors, clearErrors } = useHttp();
 	const { token } = useContext(AuthContext);
+	const history = useHistory();
 	const [groups, setGroups] = useState([]);
-	const [user, setUser] = useState();
 	const [userAddGroup, setUserAddGroup] = useState();
 	const [form, setForm] = useState({
 		name: '',
@@ -30,40 +32,23 @@ export const UserCreate = () => {
 		getGroups();
 	}, [getGroups]);
 
-	const getUser = useCallback(
-		async (userId) => {
-			try {
-				const data = await request(`/api/user/${userId}`, 'GET', null, {
-					Authorization: `Bearer ${token}`,
-				});
-
-				setUser(data);
-			} catch (e) {}
-		},
-		[request, token],
-	);
-
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
+		clearErrors();
 	};
 
 	const registerHandler = useCallback(async () => {
 		try {
-			const data = await request('/api/auth/register', 'POST', {
-				...form,
-			});
+			const data = await request(
+				'/api/user/create',
+				'POST',
+				{ ...form },
+				{ Authorization: `Bearer ${token}` },
+			);
 
-			if (data && data.userId) {
-				setForm({
-					name: '',
-					email: '',
-					password: '',
-				});
-			}
-			getUser(data.userId);
-			//auth.login(data.token, data.userId);
+			if (data) history.push(`/user/edit/${data._id}`);
 		} catch (e) {}
-	}, [request, form, getUser]);
+	}, [request, form]);
 
 	const addUserToGroupHandler = (event) => {
 		setUserAddGroup(event.target.value);
@@ -72,7 +57,6 @@ export const UserCreate = () => {
 	return (
 		<div className="widget__wrapper has-shadow">
 			<div className="widget__body">
-				{user && <h4 className="widget__title mb-4">Пользователь добавлен</h4>}
 				<Form className="form__create-user">
 					<Form.Group controlId="inputName" className="mb-3">
 						<Form.Label>Имя</Form.Label>
@@ -82,6 +66,9 @@ export const UserCreate = () => {
 							value={form.name}
 							onChange={changeHandler}
 						/>
+						{errors && errors.length > 0 && (
+							<ErrorMessage errors={errors} fieldName="name" />
+						)}
 					</Form.Group>
 					<Form.Group controlId="inputEmail" className="mb-3">
 						<Form.Label>Email</Form.Label>
@@ -91,6 +78,9 @@ export const UserCreate = () => {
 							value={form.email}
 							onChange={changeHandler}
 						/>
+						{errors && errors.length > 0 && (
+							<ErrorMessage errors={errors} fieldName="email" />
+						)}
 					</Form.Group>
 					<Form.Group controlId="inputPassword" className="mb-3">
 						<Form.Label>Пароль</Form.Label>
@@ -100,6 +90,9 @@ export const UserCreate = () => {
 							value={form.password}
 							onChange={changeHandler}
 						/>
+						{errors && errors.length > 0 && (
+							<ErrorMessage errors={errors} fieldName="password" />
+						)}
 					</Form.Group>
 					<Form.Group controlId="inputAddRole" className="mb-3">
 						<Form.Label>Установить роль пользователя</Form.Label>

@@ -1,15 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useHttp } from '../../hooks/http.hook';
 import { Link, useHistory } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
 
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import logo from '../../img/logo.png';
 
 export const Register = () => {
 	const history = useHistory();
-	const auth = useContext(AuthContext);
-	const { loading, request } = useHttp();
+	const { loading, request, errors, clearErrors } = useHttp();
 	const [form, setForm] = useState({
 		name: '',
 		email: '',
@@ -18,6 +17,7 @@ export const Register = () => {
 
 	const changeHandler = (event) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
+		clearErrors();
 	};
 
 	const registerHandler = async () => {
@@ -32,7 +32,6 @@ export const Register = () => {
 					state: { email: data.email },
 				});
 			}
-			//auth.login(data.token, data.userId);
 		} catch (e) {}
 	};
 
@@ -70,6 +69,9 @@ export const Register = () => {
 								/>
 								<Form.Label>Full Name</Form.Label>
 								<span className="bar"></span>
+								{errors && errors.length > 0 && (
+									<ErrorMessage errors={errors} fieldName="name" />
+								)}
 							</Form.Group>
 							<Form.Group controlId="inputEmail">
 								<Form.Control
@@ -80,6 +82,9 @@ export const Register = () => {
 								/>
 								<Form.Label>Email</Form.Label>
 								<span className="bar"></span>
+								{errors && errors.length > 0 && (
+									<ErrorMessage errors={errors} fieldName="email" />
+								)}
 							</Form.Group>
 							<Form.Group controlId="inputPassword">
 								<Form.Control
@@ -90,6 +95,9 @@ export const Register = () => {
 								/>
 								<Form.Label>Password</Form.Label>
 								<span className="bar"></span>
+								{errors && errors.length > 0 && (
+									<ErrorMessage errors={errors} fieldName="password" />
+								)}
 							</Form.Group>
 							<div className="form__include">
 								<Form.Check

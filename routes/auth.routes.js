@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const accActivate = require('../middleware/accounActivate.middleware');
 const User = require('../models/User');
-const User_Groups = require('../models/User_Groups');
+//const User_Groups = require('../models/User_Groups');
 const router = Router();
 const nodemailer = require('nodemailer');
 
@@ -43,11 +43,9 @@ const sendUserMail = async (userName = '', userEmail, token) => {
 router.post(
 	'/register',
 	[
-		check('name', 'Минимальная длина 3 символа').isLength({ min: 3 }),
+		check('name', 'Минимум 3 символа').isLength({ min: 3 }),
 		check('email', 'Некорректный email').isEmail(),
-		check('password', 'Минимальная длина пароля 6 символов').isLength({
-			min: 6,
-		}),
+		check('password', 'Минимум 6 символов').isLength({ min: 6 }),
 	],
 	async (req, res) => {
 		try {
@@ -125,7 +123,9 @@ router.post(
 	'/login',
 	[
 		check('email', 'Введите корректный email').normalizeEmail().isEmail(),
-		check('password', 'Введите пароль').exists(),
+		check('password', 'Введите пароль.').exists().isLength({
+			min: 6,
+		}),
 	],
 	async (req, res) => {
 		try {
